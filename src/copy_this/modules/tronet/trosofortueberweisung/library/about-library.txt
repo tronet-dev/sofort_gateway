@@ -1,0 +1,10 @@
+# Description of the directory "library":
+
+## This directory contains following files and subdirectories:
+
+[FILE/DIRECTORY]        [DESCRIPTION]
+core                    Files provided by SOFORT
+payment                 Files provided by SOFORT
+sql                     Contains sql data required for this module.
+translations            Storage for translation files. In the original language files are includes,
+                        pointing to this directory.

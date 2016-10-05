@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<OX>
+    <OXMENU id="NAVIGATION_ESHOPADMIN">
+        <MAINMENU id="mxorders">
+            <SUBMENU id="mxdisplayorders" cl="admin_order" list="order_list">
+                <TAB id="mxtronotifications" cl="trosofortueberweisungorder_notifications"/>
+            </SUBMENU>
+        </MAINMENU>
+    </OXMENU>
+    <OXMENU id="TRONET_MENU_HEAD">
+        <MAINMENU id="mxtrosofortueberweisung">
+            <SUBMENU id="mxtrosofortueberweisung_dashboard" cl="trosofortueberweisung" list="trosofortueberweisung_list">
+                <TAB id="mxtrosofortueberweisung_main" cl="trosofortueberweisung_main" list="trosofortueberweisung_list"/>
+            </SUBMENU>
+        </MAINMENU>
+    </OXMENU>
+</OX>
