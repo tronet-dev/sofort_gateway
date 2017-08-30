@@ -4,7 +4,7 @@
      *
      * @file          trosofortueberweisung_lang.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2016
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    modules
      */
@@ -46,24 +46,24 @@
     ';
 
     $aLang = array(
-        'charset'                                                  => 'ISO-8859-15',
+        'charset'                                  => 'ISO-8859-15',
 
         // module settings
-        'SHOP_MODULE_GROUP_main'                                   => 'Allgemeine Einstellungen',
-        'SHOP_MODULE_GROUP_troPaymentHandling'                     => 'Kaufabwicklung',
-        'SHOP_MODULE_GROUP_troUpdateRoutine'                       => 'Update-Routine',
-        'SHOP_MODULE_GROUP_troOtherSettings'                       => 'Sonstiges',
-        'SHOP_MODULE_iTroGatewayCanceledOrders'                    => 'Vom Endkunden abgebrochende Bestellungen stornieren oder l&ouml;schen?',
-        'SHOP_MODULE_iTroGatewayCanceledOrders_0'                  => 'Stornieren',
-        'SHOP_MODULE_iTroGatewayCanceledOrders_1'                  => 'L&ouml;schen',
-        'SHOP_MODULE_sTroGatewayConfKey'                           => 'Konfigurationsschl&uuml;ssel',
-        'HELP_SHOP_MODULE_sTroGatewayConfKey'                      => 'Sie erhalten den Konfigurationsschl&uuml;ssel im SOFORT-Backend in den Projekteinstellungen.',
-        'SHOP_MODULE_sTroGatewayVersion'                           => 'Modulversion',
-        'SHOP_MODULE_blTroGateWayUpdateCheck'                      => 'Automatisch auf Aktualisierungen pr&uuml;fen?',
-        'HELP_SHOP_MODULE_blTroGateWayUpdateCheck'                 => 'Wenn diese Option ausgew&auml;hlt ist, wird auf der
+        'SHOP_MODULE_GROUP_main'                   => 'Allgemeine Einstellungen',
+        'SHOP_MODULE_GROUP_troPaymentHandling'     => 'Kaufabwicklung',
+        'SHOP_MODULE_GROUP_troUpdateRoutine'       => 'Update-Routine',
+        'SHOP_MODULE_GROUP_troOtherSettings'       => 'Sonstiges',
+        'SHOP_MODULE_iTroGatewayCanceledOrders'    => 'Vom Endkunden abgebrochende Bestellungen stornieren oder l&ouml;schen?',
+        'SHOP_MODULE_iTroGatewayCanceledOrders_0'  => 'Stornieren',
+        'SHOP_MODULE_iTroGatewayCanceledOrders_1'  => 'L&ouml;schen',
+        'SHOP_MODULE_sTroGatewayConfKey'           => 'Konfigurationsschl&uuml;ssel',
+        'HELP_SHOP_MODULE_sTroGatewayConfKey'      => 'Sie erhalten den Konfigurationsschl&uuml;ssel im SOFORT-Backend in den Projekteinstellungen.',
+        'SHOP_MODULE_sTroGatewayVersion'           => 'Modulversion',
+        'SHOP_MODULE_blTroGateWayUpdateCheck'      => 'Automatisch auf Aktualisierungen pr&uuml;fen?',
+        'HELP_SHOP_MODULE_blTroGateWayUpdateCheck' => 'Wenn diese Option ausgew&auml;hlt ist, wird auf der
                                                             Startseite im eShop Backend eine Nachricht angezeigt, sobald
                                                             es f&uuml;r Ihre OXID Version eine neue Modulversion gibt.',
-                                                            
+
         'SHOP_MODULE_sTroGatewayReason'                            => sprintf($sTroGatewayReasonTemplate, 'Verwendungszweck 1'),
         'SHOP_MODULE_sTroGatewayReason2'                           => sprintf($sTroGatewayReasonTemplate, 'Verwendungszweck 2'),
         'SHOP_MODULE_blTroGateWayShowLogoInDeliverAndPayment'      => 'Zeige das SOFORT-Logo im Bestellschritt 3 "Versand & Zahlungsart".',
@@ -77,7 +77,7 @@
         'TRO_VERSION_DOWNLOAD'                                     => 'Neue Version (%1$s) herunterladen',
         'TRO_VERSION_INSTALL'                                      => 'Neue Version (%1$s) installieren',
         'TRO_UPDATE_SUCCESSFUL'                                    => 'Das Modul wurde auf die neueste Version geupdated',
-        'TRO_SOFORT_BY_TRONET'                                     => 'SOFORT by tronet GmbH',
+        'TRO_SOFORT_BY_TRONET'                                     => 'Sofort. by tronet GmbH',
         'TRO_CHANGE_LOG_URL_DESCRIPTION'                           => 'ChangeLog anzeigen',
 
         // general interface :: update routine
@@ -137,7 +137,9 @@
         // OXID eShop navigation
         'mxtronotifications'                                            => 'Sofortgateway-Log',
         'TRONET_MENU_HEAD'                                              => 'tronet',
-        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/tronet.gif" alt="[tronet]"/> SOFORT &Uuml;berweisung',
+        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/tronet.gif" alt="[tronet]"/> Sofort.',
         'mxtrosofortueberweisung_dashboard'                             => 'Dashboard',
         'mxtrosofortueberweisung_main'                                  => 'Stamm',
+
+        'TRO_CURRENT_LANGUAGE' => 'de',
     );

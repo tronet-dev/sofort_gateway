@@ -7,7 +7,7 @@
      *
      * @file          trosofortueberweisungorder_notifications.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2016
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    application/controllers/admin
      * @extend        oxAdminDetails

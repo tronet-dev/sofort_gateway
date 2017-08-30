@@ -1,8 +1,8 @@
 INSERT IGNORE INTO `oxpayments` SET
         `OXID` = 'trosofortgateway_su', 
         `OXACTIVE` = 1, 
-        `OXDESC` = 'SOFORT Überweisung', 
-        `OXDESC_1` = 'SOFORT Banking', 
+        `OXDESC` = 'Sofort.',
+        `OXDESC_1` = 'Online bank transfer.',
         `OXADDSUM` = 0, 
         `OXADDSUMTYPE` = 'abs', 
         `OXADDSUMRULES` = 15, 

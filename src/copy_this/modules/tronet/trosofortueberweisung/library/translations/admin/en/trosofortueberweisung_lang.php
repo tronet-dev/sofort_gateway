@@ -4,7 +4,7 @@
      *
      * @file          trosofortueberweisung_lang.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2016
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    modules
      */
@@ -76,7 +76,7 @@
         'TRO_VERSION_DOWNLOAD'                                     => 'Download new Version (%1$s)',
         'TRO_VERSION_INSTALL'                                      => 'Install new Version (%1$s)',
         'TRO_UPDATE_SUCCESSFUL'                                    => 'Modul updated successfully',
-        'TRO_SOFORT_BY_TRONET'                                     => 'SOFORT by tronet GmbH',
+        'TRO_SOFORT_BY_TRONET'                                     => 'Online bank transfer. by tronet GmbH',
         'TRO_CHANGE_LOG_URL_DESCRIPTION'                           => 'Open the change log',
 
         // general interface :: update routine
@@ -136,7 +136,9 @@
         // OXID eShop navigation
         'mxtronotifications'                                            => 'Sofortgateway-Log',
         'TRONET_MENU_HEAD'                                              => 'tronet',
-        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/tronet.gif" alt="[tronet]"/> SOFORT Banking',
+        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/tronet.gif" alt="[tronet]"/> Pay now.',
         'mxtrosofortueberweisung_dashboard'                             => 'Dashboard',
         'mxtrosofortueberweisung_main'                                  => 'Main',
+
+        'TRO_CURRENT_LANGUAGE' => 'en',
     );

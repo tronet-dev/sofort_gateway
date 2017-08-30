@@ -4,7 +4,7 @@
      *
      * @file          trosofortueberweisung_lang.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2016
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    modules
      */
@@ -22,6 +22,8 @@
         'TROSU_OPENSNEWPAGE'             => 'Link opens in new window',
         'TRO_SOFORTGATEWAY_PAYMENTERROR' => 'There was a problem with the payment. Please try a different or contact the shop owner',
         'ERROR_MESSAGE_CURRENCY'         => 'The selected currency is not supported by SOFORT Banking.',
-        'TRO_SOFORT_BANNER_IMG_TITLE'    => 'SOFORT - Direct payment via online banking',
+        'TRO_SOFORT_BANNER_IMG_TITLE'    => 'Pay now. - Direct payment via online banking',
         'TRO_SOFORT_BANNER_IMG_SUFFIX'   => 'Online Bank Transfer',
+
+        'TRO_CURRENT_LANGUAGE' => 'en',
     );

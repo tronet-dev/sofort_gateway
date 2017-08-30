@@ -4,7 +4,7 @@
      *
      * @file          trosofortueberweisung_lang.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2016
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    modules
      */
@@ -22,5 +22,7 @@
         'TROSU_OPENSNEWPAGE'             => 'Link &ouml;ffnet in neuem Fenster',
         'TRO_SOFORTGATEWAY_PAYMENTERROR' => 'Es gab ein Problem mit der Zahlungsart. Bitte probieren Sie eine andere oder kontaktieren Sie den Shop-Betreiber',
         'ERROR_MESSAGE_CURRENCY'         => 'Die gew&auml;hlte W&auml;hrung wird von SOFORT &Uuml;berweisung nicht unterst&uuml;tzt.',
-        'TRO_SOFORT_BANNER_IMG_TITLE'    => 'SOFORT &Uuml;berweisung - Einfach, Schnell, Sicher',
+        'TRO_SOFORT_BANNER_IMG_TITLE'    => 'Sofort. - Einfach, Schnell, Sicher',
+
+        'TRO_CURRENT_LANGUAGE' => 'de',
     );

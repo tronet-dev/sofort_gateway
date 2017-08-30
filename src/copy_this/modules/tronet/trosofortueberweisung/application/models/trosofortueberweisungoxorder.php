@@ -206,7 +206,7 @@
         /**
          * Sets OrderNumber.
          *
-         * This method is triggered before we execute payment via SOFORT.
+         * This method is triggered before we execute payment via Sofort.
          *
          * @author tronet GmbH
          */

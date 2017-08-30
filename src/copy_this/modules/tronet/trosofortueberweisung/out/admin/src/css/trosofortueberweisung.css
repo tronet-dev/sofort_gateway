@@ -125,7 +125,6 @@ div.tro-sofort-update-failedtoupdated {
     padding-bottom: 100px;
 }
 
-
 .tro-sofort-bottom-image-container {
     position: fixed;
     right: 50px;
@@ -148,6 +147,7 @@ div.tro-sofort-update-failedtoupdated {
     position: absolute;
     left: 210px;
     top: 6px;
+    height: 30px;
 }
 
 span.tro-sofort-update-latest-installed {

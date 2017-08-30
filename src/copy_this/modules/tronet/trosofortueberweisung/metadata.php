@@ -4,7 +4,7 @@
      *
      * @file          metadata.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2016
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    modules
      */
@@ -14,13 +14,13 @@
      */
     $aModule = array(
         'id'          => 'trosofortueberweisung',
-        'title'       => '<img height="10px" style="margin-top: 3px;" src="../modules/tronet/tronet.gif" /> SOFORT &Uuml;berweisung',
+        'title'       => '<img height="10px" style="margin-top: 3px;" src="../modules/tronet/tronet.gif" /> Sofort.',
         'description' => array(
-            'de' => 'SOFORT &Uuml;berweisung by tronet',
-            'en' => 'SOFORT Banking by tronet',
+            'de' => 'Sofort. by tronet',
+            'en' => 'Online bank transfer. by tronet',
         ),
         'thumbnail'   => 'logo_sofort.png',
-        'version'     => '7.0.0',
+        'version'     => '7.0.1',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'http://www.tro.net',

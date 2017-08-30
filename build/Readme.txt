@@ -8,7 +8,7 @@ tronet GmbH
 tro
 
 ==Version==
-7.0.0
+7.0.1
 
 ==Link==
 http://www.tronet.media
@@ -35,7 +35,7 @@ Module for integration of Sofortueberweisung-payment in Oxid.
 ==Installation==
 1. Copy contents of folder "/copy_this/" into your shop-root
 2. Activate module "trosofortueberweisung" in your oxid-backend
-3. Enter your Configuration-Key at Extensions->Modules->tronet SOFORT Überweisung
+3. Enter your Configuration-Key at Extensions->Modules->tronet Sofort.
 4. Configure new payment "Sofortüberweisung" in your oxid backend (Payment-methods, Shipping-methods)
 
 ==Modules==

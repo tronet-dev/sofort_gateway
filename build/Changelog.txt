@@ -83,3 +83,7 @@
 *UPDATED: Updated the manual
 *ADDED: an option to disable the auto-update notification
 *ADDED: Logo in order step 3 can be toggled via module settings now
+
+==7.0.1==
+*CHANGED: replace SOFORT logo with new one by KLARNA
+*CHANGED: update the name of SOFORT

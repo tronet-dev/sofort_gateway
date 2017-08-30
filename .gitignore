@@ -1,0 +1,9 @@
+# IDE files
+.idea/
+
+# Temporary files
+~*.*
+
+# Other files
+Thumbs.db
+.DS_STORE
