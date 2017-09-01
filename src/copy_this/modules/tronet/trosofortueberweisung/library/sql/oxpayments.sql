@@ -6,8 +6,8 @@ INSERT IGNORE INTO `oxpayments`
 SET
     `OXID`          = 'trosofortgateway_su',
     `OXACTIVE`      = 1,
-    `OXDESC`        = 'SOFORT Überweisung',
-    `OXDESC_1`      = 'SOFORT Banking',
+    `OXDESC`        = 'Sofort.',
+    `OXDESC_1`      = 'Pay now.',
     `OXADDSUM`      = 0,
     `OXADDSUMTYPE`  = 'abs',
     `OXADDSUMRULES` = 15,
@@ -17,20 +17,12 @@ SET
     `OXCHECKED`     = 1,
     `OXSORT`        = 1,
     `OXLONGDESC`    = '<div id="payment_form_sofortueberweisung">
-           <ul>
-             <li>Vom T&Uuml;V Saarland zertifiziertes Zahlungssystem mit gepr&uuml;ftem Datenschutz</li>
-             <li>Keine Registrierung notwendig</li>
-             <li>Ware / Content kann bei Verf&uuml;gbarkeit SOFORT versendet / freigeschaltet werden</li>
-             <li>Bitte halten Sie Ihre Online-Banking-Daten (PIN/TAN) bereit</li>
-           </ul>
+Mit dem TÜV-zertifizierten Bezahlsystem Sofort kannst du dank PIN & TAN, ohne Registrierung, einfach und sicher mit
+deinen gewohnten Online-Banking-Daten zahlen.
         </div>
         <div class="clear"></div>',
     `OXLONGDESC_1`  = '<div id="payment_form_sofortueberweisung">
-           <ul>
-             <li>Payment system with data protection certified by T&Uuml;V Saarland</li>
-             <li>No registration required</li>
-             <li>Stock goods / content can be shipped / activated immediately</li>
-             <li>Please have your online banking details at hand</li>
-           </ul>
+Direct payment via online banking. Easy, quick and secure – without registration.
+Automatic data transfer and the real-time transaction notification enable a smooth payment process and a faster delivery.
         </div>
-        <div class="clear"></div>'
+        <div class="clear"></div>';

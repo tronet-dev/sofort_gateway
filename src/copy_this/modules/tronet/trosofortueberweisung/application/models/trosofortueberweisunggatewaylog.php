@@ -2,7 +2,7 @@
     /**
      * @file          trosofortueberweisunggatewaylog.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2013
+     * @copyright (C) tronet GmbH 2017
      * @package       modules
      * @addtogroup    models
      * @extend        oxI18n
