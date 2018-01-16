@@ -189,16 +189,23 @@
          * @return string
          * @author tronet GmbH
          * @since  7.0.0
+         * @version  7.0.2
          */
         public function troCheckForChanges()
         {
+            $sTroCheckedChangesFailedMessage = '';
             $oSOFORTConfig = oxNew('trosofortueberweisungconfig');
             $sDownloadLinkRaw = $oSOFORTConfig->getTroMetaHashLinkRaw();
             $sDownloadFile = sprintf($sDownloadLinkRaw, $this->getCurrentVersion());
 
             if ($this->_troUrlExists($sDownloadFile))
             {
-                $oXML = file_get_contents($sDownloadFile);
+                /** @var trosofortueberweisungcurl $oSOFORTcURL */
+                $oSOFORTcURL = oxNew('trosofortueberweisungcurl', $sDownloadFile);
+                $oSOFORTcURL->curlSetOpt(CURLOPT_RETURNTRANSFER, 1);
+                $oXML = $oSOFORTcURL->curlExec();
+                $oSOFORTcURL->closeCh();
+
                 if ($oXML)
                 {
                     $oXml = new \SimpleXMLElement($oXML);
@@ -208,12 +215,20 @@
                 }
                 else
                 {
+                    if ($oSOFORTcURL->getErrorNumber() > 0)
+                    {
+                        $aErrorCodes = $oSOFORTcURL->getErrorCodes();
+                        $sErrorCodeName = $aErrorCodes[$oSOFORTcURL->getErrorNumber()];
+                        $sLanguageKey = 'TRO_SOFORT_' . $sErrorCodeName;
+                        $sTroCheckedChangesFailedMessage = oxRegistry::getLang()->translateString( $sLanguageKey );
+                    }
                     $aChangedFiles = array('changedCoreFiles' => 0);
                     $blTroCheckedChangesFailed = true;
                 }
             }
             else
             {
+                $sTroCheckedChangesFailedMessage = oxRegistry::getLang()->translateString('TRO_SOFORT_CURLE_COULDNT_CONNECT');
                 $aChangedFiles = array('changedCoreFiles' => 0);
                 $blTroCheckedChangesFailed = true;
             }
@@ -221,6 +236,7 @@
             $this->addTplParam('aTroChangedFiles', $aChangedFiles);
             $this->addTplParam('blTroCheckedChanges', true);
             $this->addTplParam('blTroCheckedChangesFailed', $blTroCheckedChangesFailed);
+            $this->addTplParam('sTroCheckedChangesFailedMessage', $sTroCheckedChangesFailedMessage);
         }
 
         /**
@@ -234,10 +250,12 @@
         protected function _troUrlExists($sUrl)
         {
             $aFileHeaders = @get_headers($sUrl);
-            if($aFileHeaders[0] == 'HTTP/1.1 404 Not Found') {
+            if ($aFileHeaders[0] == 'HTTP/1.1 404 Not Found')
+            {
                 $blUrlExists = false;
             }
-            else {
+            else
+            {
                 $blUrlExists = true;
             }
 

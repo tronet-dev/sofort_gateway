@@ -14,17 +14,12 @@
                 [{if $blTroGateWayShowLogoInDeliverAndPayment}]
                     [{if $oViewConf->getActLanguageAbbr() == 'de'}]
                         <a href="https://www.sofort.com/" target="_blank">
-                            <img src="https://cdn.klarna.com/1.0/shared/image/generic/badge/de_de/pay_now/standard/pink.svg" alt="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" title="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" height="75" width="100">
+                            <img src="https://cdn.klarna.com/1.0/shared/image/generic/badge/xx_XX/pay_now/standard/pink.svg" alt="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" title="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" height="75" width="100">
                         </a>
                     [{else}]
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td valign="top" width="220"><a href="https://www.sofort.com/" target="_blank"><img src="https://cdn.klarna.com/1.0/shared/image/generic/badge/en_gb/pay_now/descriptive/pink.svg" alt="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" title="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" height="75" width="100"></a></td>
-                                    <td class="brandclaim" valign="middle"><h5 class="lrg">[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_SUFFIX"}]</h5></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <a href="https://www.sofort.com/" target="_blank">
+                            <img src="https://cdn.klarna.com/1.0/shared/image/generic/badge/xx_XX/pay_now/standard/pink.svg" alt="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" title="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" height="75" width="100">
+                        </a>
                     [{/if}]
                 [{/if}]
                 [{$paymentmethod->oxpayments__oxlongdesc->getRawValue()}]

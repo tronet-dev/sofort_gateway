@@ -132,7 +132,7 @@
             // Prepare data for Sofortueberweisung
             $aPlaceHolder = array(
                 '[BSTNR]' => $oOrder->oxorder__oxordernr->value,
-                '[KNR]' => $oUser->oxuser__oxcustnr->value,
+                '[KNR]'   => $oUser->oxuser__oxcustnr->value,
                 '[KNAME]' => $oUser->oxuser__oxlname->value,
                 '[DATUM]' => date('d.m.Y'),
                 '[PRICE]' => round($oOrder->oxorder__oxtotalordersum->value, 2),

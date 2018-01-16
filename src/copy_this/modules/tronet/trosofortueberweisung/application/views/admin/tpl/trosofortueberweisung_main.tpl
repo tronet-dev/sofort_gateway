@@ -45,7 +45,11 @@
         </h3>
         [{if $blTroCheckedChangesFailed}]
             <p>
-                [{oxmultilang ident="TRO_SOFORT_UPDATE_MAIN_CHECK_FOR_CORE_CHANGES_ERROR"}]
+                [{if $sTroCheckedChangesFailedMessage}]
+                    [{$sTroCheckedChangesFailedMessage}]
+                [{else}]
+                    [{oxmultilang ident="TRO_SOFORT_UPDATE_MAIN_CHECK_FOR_CORE_CHANGES_ERROR"}]
+                [{/if}]
             </p>
         [{elseif $aTroChangedFiles.changedCoreFiles > 0}]
             <p>

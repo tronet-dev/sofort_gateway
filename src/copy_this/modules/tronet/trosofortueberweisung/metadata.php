@@ -20,7 +20,7 @@
             'en' => 'Online bank transfer. by tronet',
         ),
         'thumbnail'   => 'logo_sofort.png',
-        'version'     => '7.0.1',
+        'version'     => '7.0.2',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'http://www.tro.net',
@@ -66,6 +66,8 @@
             'trosofortueberweisung_list'               => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_list.php',
             'trosofortueberweisung_main'               => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_main.php',
             'trosofortueberweisung_update'             => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_update.php',
+            'trosofortueberweisungreleaseoxlist'       => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungreleaseoxlist.php',
+            'trosofortueberweisungcurl'                => 'tronet/trosofortueberweisung/core/utility/trosofortueberweisungcurl.php',
         ),
         'templates'   => array(
             'trosofortueberweisungorder_notifications.tpl'     => 'tronet/trosofortueberweisung/application/views/admin/tpl/trosofortueberweisungorder_notifications.tpl',
@@ -85,12 +87,10 @@
             'oxpaymentgateway' => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxpaymentgateway',
             'oxorder'          => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxorder',
             'order'            => 'tronet/trosofortueberweisung/application/controllers/trosofortueberweisungorder',
-            'order_overview'   => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisungorder_overview',
             'payment'          => 'tronet/trosofortueberweisung/application/controllers/trosofortueberweisungpayment',
             'oxbasket'         => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasket',
             'oxbasketitem'     => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasketitem',
             'navigation'       => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_navigation',
-            'oxlist'           => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungreleaseoxlist',
         ),
         'settings'    => array(
             array(

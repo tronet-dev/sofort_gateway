@@ -87,3 +87,7 @@
 ==7.0.1==
 *CHANGED: replace SOFORT logo with new one by KLARNA
 *CHANGED: update the name of SOFORT
+
+==7.0.2==
+*CHANGED: updated texts and images
+*CHANGED: performance update

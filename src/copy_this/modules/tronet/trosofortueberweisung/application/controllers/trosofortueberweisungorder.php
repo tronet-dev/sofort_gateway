@@ -38,8 +38,8 @@
              */
 
             // additional check if we really really have a user now
-            if (!$oUser = $this->getUser())
-            {
+            $oUser = $this->getUser();
+            if (!$oUser) {
                 return 'user';
             }
 

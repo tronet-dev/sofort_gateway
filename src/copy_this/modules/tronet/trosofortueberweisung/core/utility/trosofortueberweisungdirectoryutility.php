@@ -11,7 +11,7 @@
      * @author        tronet GmbH
      * @since         7.0.0
      */
-    class trosofortueberweisungdirectoryutility
+    class trosofortueberweisungdirectory
     {
         /**
          * @var trosofortueberweisungloggingutility $_oTroLoggingUtility

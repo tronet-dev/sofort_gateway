@@ -11,19 +11,79 @@
      * @author        tronet GmbH
      * @since         7.0.0
      */
-    class trosofortueberweisungreleaseoxlist extends trosofortueberweisungreleaseoxlist_parent
+    class trosofortueberweisungreleaseoxlist
     {
         /**
-         * trosofortueberweisungreleaseoxlist constructor.
-         *
-         * @param string $sObjectName
-         *
-         * @author tronet GmbH
-         * @since  7.0.0
+         * @var string
+         * @since   7.0.2
+         * @version 7.0.2
+         * @author  tronet GmbH
          */
-        public function __construct($sObjectName = 'trosofortueberweisungrelease')
+        protected $_sObjectsInListName;
+
+        /**
+         * @var
+         * @since   7.0.2
+         * @version 7.0.2
+         * @author  tronet GmbH
+         */
+        protected $_aArray;
+
+        /**
+         * @return string
+         * @version 7.0.2
+         * @since   7.0.2
+         * @author  tronet GmbH
+         */
+        public function getObjectsInListName()
         {
-            parent::__construct($sObjectName);
+            return $this->_sObjectsInListName;
+        }
+
+        /**
+         * @param string $sObjectsInListName
+         *
+         * @version 7.0.2
+         * @since   7.0.2
+         * @author  tronet GmbH
+         */
+        public function setObjectsInListName($sObjectsInListName)
+        {
+            $this->_sObjectsInListName = $sObjectsInListName;
+        }
+
+        /**
+         * @return mixed
+         * @version 7.0.2
+         * @since   7.0.2
+         * @author  tronet GmbH
+         */
+        public function getArray()
+        {
+            return $this->_aArray;
+        }
+
+        /**
+         * @param mixed $aArray
+         *
+         * @version 7.0.2
+         * @since   7.0.2
+         * @author  tronet GmbH
+         */
+        public function setArray($aArray)
+        {
+            $this->_aArray = $aArray;
+        }
+        /**
+         * trosofortueberweisungreleaseoxlist constructor.
+         * @version 7.0.2
+         * @since   7.0.2
+         * @author  tronet GmbH
+         */
+        public function __construct()
+        {
+            $this->setObjectsInListName('trosofortueberweisungrelease');
+            $this->setArray(array());
         }
 
         /**
@@ -33,6 +93,7 @@
          *
          * @author tronet GmbH
          * @since  7.0.0
+         * @version 7.0.2
          * @throws InvalidArgumentException
          */
         public function troSelectXmlUri($sXmlUri)
@@ -48,7 +109,7 @@
                 $oXml = new \SimpleXMLElement($sXmlUri, null, true);
                 foreach ($oXml->releases->release as $oSOFORTReleaseXml)
                 {
-                    $this->_aArray[] = oxNew($this->_sObjectsInListName, $oSOFORTReleaseXml->version, $oSOFORTReleaseXml->download, $oSOFORTReleaseXml->requirements->minimumOxidVersion->ce, $oSOFORTReleaseXml->requirements->minimumOxidVersion->pe, $oSOFORTReleaseXml->requirements->minimumOxidVersion->ee, $oSOFORTReleaseXml->requirements->minimumPhpVersion);
+                    $this->_aArray[] = oxNew($this->getObjectsInListName(), $oSOFORTReleaseXml->version, $oSOFORTReleaseXml->download, $oSOFORTReleaseXml->requirements->minimumOxidVersion->ce, $oSOFORTReleaseXml->requirements->minimumOxidVersion->pe, $oSOFORTReleaseXml->requirements->minimumOxidVersion->ee, $oSOFORTReleaseXml->requirements->minimumPhpVersion);
                 }
             }
             catch (Exception $oException)

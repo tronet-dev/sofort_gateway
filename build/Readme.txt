@@ -8,7 +8,7 @@ tronet GmbH
 tro
 
 ==Version==
-7.0.1
+7.0.2
 
 ==Link==
 http://www.tronet.media
@@ -47,7 +47,6 @@ payment => tronet/trosofortueberweisung/application/controllers/trosofortueberwe
 oxbasket => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasket
 oxbasketitem => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasketitem
 navigation => tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_navigation
-oxlist => tronet/trosofortueberweisung/application/models/trosofortueberweisungreleaseoxlist
 
 ==Libraries==
 SofortLib-PHP-Payment-2.1.2 (/copy_this/tronet/trosofortueberweisung/library/)
