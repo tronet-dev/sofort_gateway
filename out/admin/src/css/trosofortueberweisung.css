@@ -1,0 +1,155 @@
+/* update notify  */
+#tro-sofort-notify-image {
+    float: left;
+    height: 12px;
+    margin-right: 5px;
+}
+
+.tro-sofort-clear-both {
+    clear: both;
+}
+
+.tro-sofort-link-button {
+    display: inline-block;
+    background-color: #f1f1f1;
+    padding: 5px 10px;
+    border: solid 1px #888888;
+}
+
+a.tro-sofort-link-button.tro-sofort-link-button-active {
+    background-color: #ac1d1f;
+    color: #ffffff;
+    border: solid 1px #ac1d1f;
+}
+
+/* update steps */
+ul.tro-sofort-update-steps {
+    margin-left: 12px;
+    margin-bottom: 10px;
+}
+
+ul.tro-sofort-update-steps > li {
+    margin-bottom: 5px;
+    background-position: -4px top;
+}
+
+ul.tro-sofort-update-steps li > ul > li:hover {
+    background-color: #e0e0e0;
+}
+
+.tro-todo {
+    color: #888888;
+}
+
+.tro-successful {
+    color: #00AA00;
+}
+
+.tro-failed {
+    color: #ac1d1f;
+}
+
+.tro-failed-but-continued-by-users-request {
+    color: #b78200;
+}
+
+fieldset.tro-sofort-update-fieldset {
+    border: dotted 1px #888888;
+}
+
+fieldset.tro-sofort-update-fieldset legend {
+    font-weight: bold;
+}
+
+fieldset.tro-sofort-update-fieldset ul.tro-sofort-update-fieldset-list {
+    list-style-type: none;
+}
+
+fieldset.tro-sofort-update-fieldset ul.tro-sofort-update-fieldset-list span.tro-sofort-update-legend-todo {
+    background-color: #888888;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+
+fieldset.tro-sofort-update-fieldset ul.tro-sofort-update-fieldset-list span.tro-sofort-update-legend-successful {
+    background-color: #00AA00;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+
+fieldset.tro-sofort-update-fieldset ul.tro-sofort-update-fieldset-list span.tro-sofort-update-legend-failed {
+    background-color: #ac1d1f;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+
+fieldset.tro-sofort-update-fieldset ul.tro-sofort-update-fieldset-list span.tro-sofort-update-legend-failed-but-continued-by-users-request {
+    background-color: #b78200;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+
+div.tro-sofort-update-successfullyupdated {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: rgba(0, 170, 0, 0.45);
+    color: #000;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px #8a8a8a;
+}
+
+div.tro-sofort-update-failedtoupdated {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: rgba(172, 29, 31, 0.45);
+    color: #000;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px #8a8a8a;
+}
+
+.tro-sofort-update-steps-changed-core-files-left-label {
+    display: inline-block;
+    width: 150px;
+}
+
+/* own controller, be page */
+#tro-sofort-main-page-wrap {
+    padding-bottom: 100px;
+}
+
+.tro-sofort-bottom-image-container {
+    position: fixed;
+    right: 50px;
+    bottom: 100px;
+    height: 45px;
+    width: 370px;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px #8a8a8a;
+}
+
+.tro-sofort-bottom-image-container .tro-sofort-bottom-left-1 {
+    position: absolute;
+    height: 45px;
+    left: 0px;
+    top: 0px;
+}
+
+.tro-sofort-bottom-image-container .tro-sofort-bottom-left-2 {
+    position: absolute;
+    left: 210px;
+    top: 6px;
+    height: 30px;
+}
+
+span.tro-sofort-update-latest-installed {
+    color: green;
+}

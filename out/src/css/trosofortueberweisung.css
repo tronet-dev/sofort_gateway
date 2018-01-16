@@ -1,0 +1,6 @@
+#payment_form_sofortueberweisung ul {
+  padding-left: 20px;
+}
+#payment_form_sofortueberweisung li {
+  list-style-type: disc;
+}
