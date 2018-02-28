@@ -1,7 +1,7 @@
 <tr>
     <td class="edittext">[{oxmultilang ident="ORDER_OVERVIEW_PAYMENTTYPE"}]:</td>
     <td class="edittext">
-        <b>[{$edit->troGetPaymentName()}]</b>[{if $edit->troGetPaymentStatus()}] ([{$edit->troGetPaymentStatus()}])[{/if}]
+        <b>[{$edit->getTroPaymentName()}]</b>[{if $edit->getTroPaymentStatus()}] ([{$edit->getTroPaymentStatus()}])[{/if}]
     </td>
 </tr>
 <tr>

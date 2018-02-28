@@ -9,7 +9,7 @@
  *
  * @file          trosofortueberweisungorder_overview.php
  * @link          http://www.tro.net
- * @copyright (C) tronet GmbH 2017
+ * @copyright (C) tronet GmbH 2013
  * @package       modules
  * @addtogroup    controllers
  * @extend        order_overview

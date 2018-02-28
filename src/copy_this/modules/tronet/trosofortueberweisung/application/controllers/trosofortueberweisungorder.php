@@ -1,18 +1,11 @@
 <?php
     /**
-     * @file          trosofortueberweisungorder.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
-     * @package       modules
-     * @addtogroup    controllers
-     * @extend        order
-     */
-
-    /**
-     * Order manager. Arranges user ordering data, checks/validates
-     * it, on success stores ordering data to DB.
+     * @copyright (c) tronet GmbH 2018
+     * @author        tronet GmbH
      *
-     * NEW: sets ordernr before finalizing and continues finalizing, if stopped during paymentexecution
+     * @since         7.0.0
+     * @version       7.0.3
      */
     class trosofortueberweisungorder extends trosofortueberweisungorder_parent
     {
@@ -20,68 +13,52 @@
          * Finalizes order, if we stopped during executePayment
          *
          * @return string
+         * 
+         * @author  tronet GmbH
+         * @since   7.0.0
+         * @version 7.0.3
          */
-        public function continueExecute()
+        public function troContinueExecute()
         {
-            $oSession = new oxSession();
-
-            // In order to avoid abuse we first verify that a previously initiated order has been payed.
-            // In case the test fails for any reason order step 3 will be displayed.
-            if (!$this->_continueExecuteSUOrder())
-            {
-                return 'payment';
-            }
-
-            /*
-             * As this function is triggered due to external processes variables $oUser, $oBasket, $oOrder have
-             * to be initialized.
-             */
-
-            // additional check if we really really have a user now
+            $oConfig = $this->getConfig();
+            $sOrderId = $oConfig->getRequestParameter('orderid');
+            $oOrder = oxNew('oxorder');
+            $oOrder->load($sOrderId);
+            $oOrderUser = $oOrder->getOrderUser();
             $oUser = $this->getUser();
-            if (!$oUser) {
-                return 'user';
+
+            // Bestellung nur zu Ende bringen, wenn
+            // - gültige oxorder-ID
+            // - ein User existiert
+            // - der User zur Bestellung passt
+            if (!$oOrder->getId() || !$oUser || $oUser->getId() != $oOrderUser->getId())
+            {
+                return 'order';
             }
 
-            // get basket contents
-            $oBasket = $oSession->getVariable('trosubasket');
-            $oBasket->troGetFromSession();
-            if ($oBasket->getProductsCount())
+            if ($this->_troContinueExecuteSofortueberweisungOrder($oOrder))
             {
+                // Finish oxOrder::finalizeOrder
+                $oBasket = $oOrder->getTroOrderBasket();
+                $iSuccess = $oOrder->troContinueFinalizeOrder($oBasket, $oUser);
 
-                try
-                {
-                    $oOrder = $oSession->getVariable('trosuoxorder');
+                ////////////////////////////////////////////////////////////
+                //// Following is the rest of original oxOrder::execute
 
-                    // Finish oxOrder::finalizeOrder
-                    $iSuccess = $oOrder->continueFinalizeOrder($oBasket, $oUser);
+                // performing special actions after user finishes order (assignment to special user groups)
+                $oUser->onOrderExecute($oBasket, $iSuccess);
 
-                    ////////////////////////////////////////////////////////////
-                    //// Following is the rest of oxOrder::execute
-
-                    // performing special actions after user finishes order (assignment to special user groups)
-                    $oUser->onOrderExecute($oBasket, $iSuccess);
-
-                    // proceeding to next view
-                    return $this->_getNextStep($iSuccess);
-                }
-                catch (oxOutOfStockException $oEx)
-                {
-                    oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx, false, true, 'basket');
-                }
-                catch (oxNoArticleException $oEx)
-                {
-                    oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
-                }
-                catch (oxArticleInputException $oEx)
-                {
-                    oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
-                }
+                // proceeding to next view
+                return $this->_getNextStep($iSuccess);
+            }
+            else
+            {
+                return $this->_getNextStep(oxOrder::ORDER_STATE_OK);
             }
         }
 
         /**
-         * _continueExecuteSUOrder
+         * _troContinueExecuteSofortueberweisungOrder
          *
          * Verifies previously initiated order has been payed.
          *
@@ -93,36 +70,35 @@
          * contains a record with the Transaction-ID which has not been finished yet (status: NOT_FINISHED) plus
          * the defined payment method is "trosofortgateway_su" the order processing will be continued.
          *
-         * We assume order should not be continued. If everything is ok the return var $blContinueExecuteSUOrder is
-         * set to true.
-         *
          * @return boolean
-         * @author tronet GmbH
+         * 
+         * @author  tronet GmbH
+         * @since   7.0.0
+         * @version 7.0.3
          */
-        private function _continueExecuteSUOrder()
+        protected function _troContinueExecuteSofortueberweisungOrder($oOrder)
         {
-            $blContinueExecuteSUOrder = false;
-
             $oConfig = $this->getConfig();
-            require_once($oConfig->getModulesDir() . 'tronet/trosofortueberweisung/library/core/sofortLibTransactionData.inc.php');
+            require_once($oConfig->getModulesDir().'tronet/trosofortueberweisung/library/core/sofortLibTransactionData.inc.php');
 
             // initialize
-            $sOrderId = $oConfig->getRequestParameter('orderid');
             $sTransactionId = $oConfig->getRequestParameter('transactionid');
             $sConfigKey = $oConfig->getConfigParam('sTroGatewayConfKey');
 
             // Request the current transaction-status.
-            $oSofort = new SofortLibTransactionData($sConfigKey);
-            $oSofort->addTransaction($sTransactionId);
-            $oSofort->sendRequest();
-            $sStatus = $oSofort->getStatus();
+            $oTransactionData = new SofortLibTransactionData($sConfigKey);
+            $oTransactionData->addTransaction($sTransactionId);
+            $oTransactionData->sendRequest();
+            $sTransactionDataStatus = $oTransactionData->getStatus();
 
-            if ($this->troSOFORTOrderHasBeenPayed($sStatus) && $this->troSOFORTOrderIsNotFinishedYet($sTransactionId, $sOrderId))
+            if ($this->_troSOFORTOrderHasBeenPayed($sTransactionDataStatus) && $this->_troSOFORTOrderIsNotFinishedYet($oOrder))
             {
-                $blContinueExecuteSUOrder = true;
+                return true;
             }
-
-            return $blContinueExecuteSUOrder;
+            else
+            {
+                return false;
+            }
         }
 
         /**
@@ -131,37 +107,38 @@
          *
          * Status: "received": SOFORT AG has written off and received the money.
          *
-         * @param $sPaymentStatus
+         * @param string $sPaymentStatus
          *
          * @return bool
-         * @author tronet GmbH
-         * @since 7.0.0
+         * 
+         * @author  tronet GmbH
+         * @since   7.0.0
+         * @version 7.0.3
          */
-        protected function troSOFORTOrderHasBeenPayed($sPaymentStatus)
+        protected function _troSOFORTOrderHasBeenPayed($sPaymentStatus)
         {
             $aValidPaymentStatus = array('pending', 'received', 'untraceable');
+            $blSOFORTOrderHasBeenPayed = in_array($sPaymentStatus, $aValidPaymentStatus);
 
-            return (in_array($sPaymentStatus, $aValidPaymentStatus));
+            return $blSOFORTOrderHasBeenPayed;
         }
 
         /**
          * Determine whether current order with the present Transaction-ID is opened (status: NOT_FINISHED)
          *
-         * @param $sTransactionId
-         * @param $sOrderId
+         * @param string $sTransactionId
+         * @param string $sOrderId
          *
-         * @return string
-         * @author tronet GmbH
+         * @return bool
+         * 
+         * @author  tronet GmbH
+         * @since   7.0.0
+         * @version 7.0.3
          */
-        protected function troSOFORTOrderIsNotFinishedYet($sTransactionId, $sOrderId)
+        protected function _troSOFORTOrderIsNotFinishedYet($oOrder)
         {
-            $oDb = oxDb::getDb();
+            $blSOFORTOrderIsNotFinishedYet = (bool)($oOrder->oxorder__oxtransstatus->value == 'NOT_FINISHED');
 
-            $sSql = "select oxid from oxorder where oxpaymenttype = 'trosofortgateway_su' 
-                      and oxtransstatus = 'NOT_FINISHED'
-                      and oxtransid = " . $oDb->quote($sTransactionId) . "
-                      and oxid = " . $oDb->quote($sOrderId);
-
-            return $oDb->getOne($sSql);
+            return $blSOFORTOrderIsNotFinishedYet;
         }
     }

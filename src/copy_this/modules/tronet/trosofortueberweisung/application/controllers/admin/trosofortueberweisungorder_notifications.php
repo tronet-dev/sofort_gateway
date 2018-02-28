@@ -7,7 +7,7 @@
      *
      * @file          trosofortueberweisungorder_notifications.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
+     * @copyright (C) tronet GmbH 2018
      * @package       modules
      * @addtogroup    application/controllers/admin
      * @extend        oxAdminDetails
@@ -17,10 +17,6 @@
     class trosofortueberweisungorder_notifications extends oxAdminDetails
     {
         /**
-         * Executes parent method parent::render(), creates oxOrder and
-         * oxList objects, passes it's data to Smarty engine and returns
-         * name of template file "troorder_notifications.tpl".
-         *
          * @return string
          * @author tronet GmbH
          */
@@ -94,39 +90,5 @@
             }
 
             return $oLogs;
-        }
-
-        /**
-         * Extends method by our needs.
-         *
-         * Saves trogatewaylog-entry text changes.
-         * @author tronet GmbH
-         */
-        public function save()
-        {
-            parent::save();
-
-            $oOrder = oxNew('oxOrder');
-            if ($oOrder->load($this->getEditObjectId()))
-            {
-                $sTroGatewayLogTransactionId = $this->getConfig()->getRequestParameter('trogatewaylog__transactionid');
-
-                $oTroGatewayLog = oxNew('trosofortueberweisunggatewaylog');
-                $oTroGatewayLog->load($this->getLogOxid());
-                $oTroGatewayLog->trogatewaylog__transactionid = new oxField($sTroGatewayLogTransactionId);
-                $oTroGatewayLog->save();
-            }
-        }
-
-        /**
-         * Extends method by our needs.
-         *
-         * Deletes trogatewaylog-entry from DB
-         * @author tronet GmbH
-         */
-        public function delete()
-        {
-            $oTroGatewayLog = oxNew('trosofortueberweisunggatewaylog');
-            $oTroGatewayLog->delete($this->getLogOxid());
         }
     }

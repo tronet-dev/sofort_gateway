@@ -1,17 +1,15 @@
 <?php
     /**
-     * @file          trosofortueberweisunggatewaylog.php
-     * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
-     * @package       modules
-     * @addtogroup    models
-     * @extend        oxI18n
-     */
-
-    /**
      * Order Notifications Logger.
      *
      * Stores Notification-messages from SOFORT, containing status-changes, in DB
+     *
+     * @link          http://www.tro.net
+     * @copyright (c) tronet GmbH 2018
+     * @author        tronet GmbH
+     *
+     * @since         7.0.0
+     * @version       8.0.0
      */
     class trosofortueberweisunggatewaylog extends oxI18n
     {
@@ -45,5 +43,17 @@
         {
             parent::__construct();
             $this->init($this->_sCoreTbl);
+        }
+        
+        /**
+         * @author  tronet GmbH
+         * @since   7.0.3
+         * @version 7.0.3
+         */
+        public function getTroNewestLog($sTransactionId)
+        {
+            $oDB = oxDb::getDb(false);
+            $sSelect = "SELECT * FROM trogatewaylog WHERE transactionid = '$sTransactionId' ORDER BY timestamp DESC LIMIT 1";
+            return $oDB->getRow($sSelect);
         }
     }

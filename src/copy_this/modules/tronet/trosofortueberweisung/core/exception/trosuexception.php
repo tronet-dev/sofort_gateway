@@ -5,7 +5,7 @@
      *
      * @file          trosuexception.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
+     * @copyright (C) tronet GmbH 2018
      * @package       modules
      * @addtogroup    trosofortueberweisung\core\exception
      * @extend        oxpaymentgateway

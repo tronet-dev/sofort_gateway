@@ -1,147 +1,153 @@
 <?php
 
 /**
- * @file      trosofortueberweisungoxorder.php
- * @link      http://www.tro.net
- * @copyright (C) tronet GmbH 2017
- * @package   modules
- * @addtogroup models
- * @extend oxorder
- */
-
-/**
- * Order manager.
- * Performs creation assigning, updating, deleting and other order functions.
+ * @link          http://www.tro.net
+ * @copyright (c) tronet GmbH 2018
+ * @author        tronet GmbH
  *
- * NEW: sets ordernr before finalizing and continues finalizing, if stopped during paymentexecution
+ * @since         7.0.0
+ * @version       7.0.3
  */
 class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent 
 {
-    private $_sStatus = null;
-    
     /**
-     * Bestellung mit dieser ID loeschen
-     * Bestellung mit dieser ID kann existieren, wenn vorher schon mal zu SofortUeberweisung
-     * weitergeleitet wurde und ueber Back-Button des Browsers zurueckgekehrt wurde
-     *
-     * @return null
+     * @var string $_sTroPaymentStatus
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
      */
-    public function troDeleteOldOrder()
+    protected $_sTroPaymentStatus = null;
+
+    /**
+     * @var string $_blContinueFinalizeOrder
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    protected $_blContinueFinalizeOrder = false;
+
+    /**
+     * @var string $_sOrderStatus
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    protected $_sOrderStatus = null;
+
+    /**
+     * gets Order Basket after returning from Sofort.
+     *
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    public function getTroOrderBasket($blStockCheck = true)
     {
-        $oSession = new oxSession();
-        $sOrderId = $oSession->getVariable('sess_challenge');
+        $oBasket = $this->_getOrderBasket($blStockCheck);
+        $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        $oBasket->calculateBasket(true);
 
-        if ($sOrderId)
-        {
-            $oDb = oxDb::getDb();
-            $sSql = "select oxid from oxorder 
-                  where oxpaymenttype = 'trosofortgateway_su' 
-                  and oxtransstatus = 'NOT_FINISHED'
-                  and oxid = " . $oDb->quote($sOrderId);
-
-            if ($oDb->getOne($sSql))
-            {
-                // check what should happen, depending on the users choice. Delete or cancel the old order
-                // 0 => cancel order
-                // 1 => delete order#
-                $iMode = $this->getConfig()->getConfigParam('iTroGatewayCanceledOrders');
-
-                if ($iMode == 0)
-                {
-                    $this->load($sOrderId);
-                    $this->cancelOrder();
-                    $this->oxorder__oxordernr = null;
-                    $this->oxorder__oxstorno = null;
-                    $this->getSession()->setVariable('sess_challenge', oxUtilsObject::getInstance()->generateUID());
-                }
-                elseif ($iMode == 1)
-                {
-                    $this->delete($sOrderId);
-                    $this->getSession()->setVariable('sess_challenge', oxUtilsObject::getInstance()->generateUID());
-                }
-            }
-        }
+        return $oBasket;
     }
 
     /**
-     * Order checking, processing and saving method.
-     * Before saving performed checking if order is still not executed (checks in
-     * database oxorder table for order with know ID), if yes - returns error code 3,
-     * if not - loads payment data, assigns all info from basket to new oxorder object
-     * and saves full order with error status. Then executes payment. On failure -
-     * deletes order and returns error code 2. On success - saves order (oxorder::save()),
-     * removes article from wishlist (oxorder::_updateWishlist()), updates voucher data
-     * (oxorder::_markVouchers()). Finally sends order confirmation email to customer
-     * (oxemail::SendOrderEMailToUser()) and shop owner (oxemail::SendOrderEMailToOwner()).
-     * If this is order recalculation, skipping payment execution, marking vouchers as used
-     * and sending order by email to shop owner and user
-     * Mailing status (1 if OK, 0 on error) is returned.
+     * @param Basket        $oBasket      basket object
+     * @param UserPayment   $oUserPayment user payment object
      *
-     * @param oxBasket $oBasket              Shopping basket object
-     * @param oxUser   $oUser                Current user object
-     * @param bool     $blRecalculatingOrder Order recalculation
-     *
-     * @return integer
-     */
-    public function finalizeOrder(oxBasket $oBasket, $oUser, $blRecalculatingOrder = false)
-    {
-        $this->troDeleteOldOrder();
-
-        return parent::finalizeOrder($oBasket, $oUser, $blRecalculatingOrder);
-    }
-
-    /**
-     * Executes payment. Additionally loads oxPaymentGateway object, initiates
-     * it by adding payment parameters (oxPaymentGateway::setPaymentParams())
-     * and finally executes it (oxPaymentGateway::executePayment()). On failure -
-     * deletes order and returns * error code 2.
-     *
-     * @param oxBasket|trosofortueberweisungoxbasket $oBasket      basket object
-     * @param object   $oUserPayment user payment object
-     *
-     * @return  integer 2 or an error code
+     * @return integer 2 or an error code
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.0
+     * @version 7.0.3
      */
     protected function _executePayment(oxBasket $oBasket, $oUserPayment)
     {
         $sPaymentId = $oBasket->getPaymentId();
         if ($sPaymentId == 'trosofortgateway_su')
         {
-            // Safe current order only ($this) and the current basket ($oBasket) in the session,
-            // so that the info are available when the user returns from the SOFORT AG.
-            $oSession = new oxSession();
-
+            // Setze schon jetzt eine Bestellnummer, 
+            // um sie als Verwendungszweck der Überweisung nutzen zu können
             if (!$this->oxorder__oxordernr->value)
             {
                 $this->_setNumber();
             }
 
-            $oOrder = clone $this;
-            $oSession->setVariable('trosuoxorder', $oOrder);
-            $oSession->setVariable('trosubasket', $oBasket);
-            $oBasket->troStoreInSession();
+            // Setze Bestelldatum
+            $this->_updateOrderDate();
+
+            // verwendete Gutscheine als benutzt markieren, da beim Bestellabschluss
+            // über die SOFORT-Notification keine Session-Variable mit den verwendeten
+            // Gutscheinen zur Verfügung steht.
+            $oUser = $this->getOrderUser();
+            $this->_markVouchers($oBasket, $oUser);
         }
 
         return parent::_executePayment($oBasket, $oUserPayment);
     }
 
     /**
-     * continueFinalizeOrder
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    protected function _updateOrderDate()
+    {
+        if (!$this->oxorder__oxorderdate->value || $this->oxorder__oxorderdate->value == '0000-00-00 00:00:00')
+        {
+            parent::_updateOrderDate();
+        }
+    }
+
+    /**
+     * @param Basket $oBasket             Shopping basket object
+     * @param User   $oUser               Current user object
+     * @param bool   $blRecalculatingOrder Order recalculation
+     *
+     * @return integer
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.0
+     * @version 7.0.3
+     */
+    public function finalizeOrder(oxBasket $oBasket, $oUser, $blRecalculatingOrder = false)
+    {
+        $this->_troHandleExistingSOFORTOrder();
+        return parent::finalizeOrder($oBasket, $oUser, $blRecalculatingOrder);
+    }
+
+    /**
+     * troContinueFinalizeOrder
      *
      * On return from SOFORT AG OXIDs core method finalizeOrder is continued.
      *
-     * @param oxBasket $oBasket              Shopping basket object
-     * @param object   $oUser                Current user object
-     * @param bool     $blRecalculatingOrder Order recalculation
+     * @param Basket $oBasket             Shopping basket object
+     * @param User   $oUser               Current user object
      *
      * @return string
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.0
+     * @version 7.0.3
      */
-    public function continueFinalizeOrder(oxBasket $oBasket, $oUser, $blRecalculatingOrder = false)
+    public function troContinueFinalizeOrder(oxBasket $oBasket, $oUser)
     {
-        $oSession = new oxSession();
         // payment information
         $oUserPayment = $this->_setPayment($oBasket->getPaymentId());
+        $blRecalculatingOrder = false;
+        $this->_blContinueFinalizeOrder = true;
 
-        //// Rest of finalizeOrder
+        //////////////////////////////////
+        // Rest of original finalizeOrder
+        
+        if (!$this->oxorder__oxordernr->value) {
+            $this->_setNumber();
+        } else {
+            oxNew('oxCounter')->update($this->_getCounterIdent(), $this->oxorder__oxordernr->value);
+        }
+
         // executing TS protection
         if (!$blRecalculatingOrder && $oBasket->getTsProductId()) {
             $blRet = $this->_executeTsProtection($oBasket);
@@ -151,15 +157,9 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
         }
 
         // deleting remark info only when order is finished
-        $oSession->deleteVariable('ordrem');
-        $oSession->deleteVariable('stsprotection');
-
-        if (!$this->oxorder__oxordernr->value) {
-            $this->_setNumber();
-        } else {
-            oxNew('oxCounter')->update($this->_getCounterIdent(), $this->oxorder__oxordernr->value);
-        }
-
+        oxRegistry::getSession()->deleteVariable('ordrem');
+        oxRegistry::getSession()->deleteVariable('stsprotection');
+        
         //#4005: Order creation time is not updated when order processing is complete
         if (!$blRecalculatingOrder) {
             $this->_updateOrderDate();
@@ -193,45 +193,175 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
 
         // Call the original finalizeOrder method. In case the method is extended by other modules,
         // this makes sure those features are executed as well.
-        $iRet2 = $this->finalizeOrder($oBasket, $oUser, $blRecalculatingOrder);
+        $iRet2 = $this->finalizeOrder($oBasket, $oUser, true);
 
-        // Return value of the original finalizeOrder should be self::ORDER_STATE_ORDEREXISTS in any case,
-        // as the order has been created before the redirection to SOFORT AG.
-        // In case a different value is returned, we pass this return value.
-        if ($iRet2 == self::ORDER_STATE_ORDEREXISTS)
+        // Wenn die original finalizeOrder nicht ok liefert, gebe deren Wert zurück
+        if ($iRet2 != self::ORDER_STATE_OK)
         {
-            return $iRet;
+            return $iRet2;
         }
-        return $iRet2;
+        return $iRet;
     }
 
     /**
-     * Sets OrderNumber.
-     *
-     * This method is triggered before we execute payment via Sofort.
-     *
-     * @author tronet GmbH
+     * Liefere den Status einer Sofortüberweisungs-Bestellung
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
      */
-    public function troSetOrderNr()
+    protected function _getTroSOFORTOrderStatus($sOrderId)
     {
-        if (is_null($this->getFieldData('oxordernr')))
+        if ($this->_sOrderStatus === null)
         {
-            $this->_setNumber();
+            $oDb = oxDb::getDb();
+            $sSql = "SELECT oxtransstatus FROM oxorder
+                  WHERE oxpaymenttype = 'trosofortgateway_su'
+                  AND oxid = ".$oDb->quote($sOrderId);
+            $this->_sOrderStatus = $oDb->getOne($sSql);
+        }
+        return $this->_sOrderStatus;
+    }
+
+    /**
+     * Wenn nach der Bezahlung auf Seiten der SOFORT AG 
+     * nicht wieder in den Shop zurückgekehrt wird,
+     * bleibt die Bestellung in der Session bestehen 
+     * und muss gesondert behandelt werden
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    protected function _troHandleExistingSOFORTOrder()
+    {
+        if ($this->_blContinueFinalizeOrder)
+        {
+            // finalizeOrder wurde von troContinueFinalizeOrder aufgerufen
+            // angefangene Sofortueberweisungsbestellung wird fortgesetzt
+            // hier ist nichts zu tun
+            return;
+        }
+
+        $oSession = oxRegistry::getSession();
+        $sOrderId = $oSession->getVariable('sess_challenge');
+
+        $sOrderStatus = $this->_getTroSOFORTOrderStatus($sOrderId);
+        if ($sOrderStatus == 'NOT_FINISHED')
+        {
+            // angefangene Sofortueberweisungsbestellung
+            // storniere bisherige Artikel
+            // behalte oxorder und führe sie zu Ende
+            $this->load($sOrderId);
+            $oOrderArticles = $this->getOrderArticles(false);
+            foreach ($oOrderArticles as $oOrderArticle)
+            {
+                // die Funktion oxoderarticles->delete berücksichtigt den Lagerbestand
+                $oOrderArticle->delete();
+            }
+        }
+        elseif ($sOrderStatus == 'OK')
+        {
+            // beendete Sofortueberweisungsbestellung -> neue ID vergeben
+            $oSession->setVariable('sess_challenge', oxUtilsObject::getInstance()->generateUID());
         }
     }
-                
+
     /**
-     * returns current paymentstatus from DB-table trogatewaylog
+     * überladene Oxid-Funktion
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    protected function _checkOrderExist($sOxId = null)
+    {
+        $sOrderStatus = $this->_getTroSOFORTOrderStatus($sOxId);
+        if ($this->_blContinueFinalizeOrder || $sOrderStatus == 'NOT_FINISHED')
+        {
+            // angefangene Sofortueberweisungsbestellung -> führe sie zu Ende,
+            // als ob diese Bestellung noch nicht existiert
+            return false;
+        }
+        else
+        {
+            // andere Bestellung
+            return parent::_checkOrderExist($sOxId);
+        }
+    }
+
+    /**
+     * Bestellung mit dieser ID loeschen
+     * Bestellung mit dieser ID kann existieren, wenn vorher schon mal zu SofortUeberweisung
+     * weitergeleitet wurde und ueber Back-Button des Browsers zurueckgekehrt wurde
+     * 
+     * @author  tronet GmbH
+     * @since   7.0.0
+     * @version 7.0.3
+     */
+    public function troDeleteOldOrder()
+    {
+        if ($this->oxorder__oxpaymenttype->value == 'trosofortgateway_su'
+         && $this->oxorder__oxtransstatus->value == 'NOT_FINISHED'
+         && $this->oxorder__oxstorno->value == 0)
+        {
+            // check what should happen, depending on the users choice. Delete or cancel the old order
+            // 0 => cancel order
+            // 1 => delete order
+            $iCancelOrderMode = $this->getConfig()->getConfigParam('iTroGatewayCanceledOrders');
+            $oSession = oxRegistry::getSession();
+
+            if ($iCancelOrderMode == 0)
+            {
+                $this->cancelOrder();
+                $this->oxorder__oxordernr = null;
+                $this->oxorder__oxstorno = null;
+                $oSession->setVariable('sess_challenge', oxUtilsObject::getInstance()->generateUID());
+            }
+            elseif ($iCancelOrderMode == 1)
+            {
+                $this->delete();
+                $oSession->setVariable('sess_challenge', oxUtilsObject::getInstance()->generateUID());
+            }
+
+            // Gutscheine mussten bereits vor Bezahlung in der Funktion _executePayment
+            // als eingelöst markiert werden.
+            // Bei Bestellabbruch muss dies rückgängig gemacht werden.
+            $this->_troMarkVouchersAsUnused();
+        }
+    }
+
+    /**
+     * Gutscheine mussten bereits vor Bezahlung in der Funktion _executePayment
+     * als eingelöst markiert werden.
+     * Bei Bestellabbruch muss dies rückgängig gemacht werden.
+     *
+     * @author  tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
+     */
+    protected function _troMarkVouchersAsUnused()
+    {
+        $oDb = oxDb::getDb();
+        $sUpdate = "UPDATE oxvouchers SET oxdateused = 0, oxorderid = '', oxuserid = '' WHERE oxorderid = '".$this->getId()."'";
+        $oDb->execute($sUpdate);
+    }
+
+    /**
+     * returns name of the payment-method used for this order
      *
      * @return string
+     * 
      * @author tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
      */
-    public function troGetPaymentName()
+    public function getTroPaymentName()
     {
         if ($this->_oPayment === null)
         {
             $this->_oPayment = oxNew('oxpayment');
-            $this->_oPayment->loadinlang(oxRegistry::getLang(), $this->oxorder__oxpaymenttype->value);
+            $this->_oPayment->loadinlang(oxRegistry::getLang()->getObjectTplLanguage(), $this->oxorder__oxpaymenttype->value);
         }
 
         return $this->_oPayment->oxpayments__oxdesc->value;
@@ -241,21 +371,23 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      * returns current paymentstatus from DB-table trogatewaylog
      *
      * @return string
+     * 
      * @author tronet GmbH
+     * @since   7.0.3
+     * @version 7.0.3
      */
-    public function troGetPaymentStatus()
+    public function getTroPaymentStatus()
     {
-        if ($this->_sStatus === null)
+        if ($this->_sTroPaymentStatus === null)
         {
             if ($this->getPaymentType()->oxuserpayments__oxpaymentsid->rawValue == 'trosofortgateway_su')
             {
                 $oDB = oxDb::getDb(oxDb::FETCH_MODE_ASSOC);
-
                 $sSelect = "SELECT status FROM trogatewaylog WHERE transactionid='" . $this->oxorder__oxtransid->value . "' ORDER BY timestamp DESC LIMIT 1";
-                $this->_sStatus = $oDB->getOne($sSelect);
-            };
+                $this->_sTroPaymentStatus = $oDB->getOne($sSelect);
+            }
         }
 
-        return $this->_sStatus;
-    }        
+        return $this->_sTroPaymentStatus;
+    }
 }

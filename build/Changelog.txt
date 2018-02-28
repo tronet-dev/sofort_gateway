@@ -91,3 +91,7 @@
 ==7.0.2==
 *CHANGED: updated texts and images
 *CHANGED: performance update
+
+==7.0.3==
+*CHANGED: Order gets finalized even if the shopuser quits after paying at Sofort.
+*ADDED: Script to start by cronjob to delete all abandoned orders

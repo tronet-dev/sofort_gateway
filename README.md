@@ -2,7 +2,7 @@
 
 ## functional description
 
-The OXID eShop interface for Online bank transfer. (further references as Sofort.) extends an existing installation of the software OXID eShop by the
+The OXID eShop interface for Sofort. extends an existing installation of the software OXID eShop by the
 payment method Sofort..
 
 OXID eShop is a software by OXID eSales GmbH, Freiburg, Germany. It is

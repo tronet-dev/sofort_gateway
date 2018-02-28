@@ -7,7 +7,7 @@
      *
      * @file          trosofortueberweisung_main.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
+     * @copyright (C) tronet GmbH 2018
      * @package       modules
      * @addtogroup    core
      * @author        tronet GmbH

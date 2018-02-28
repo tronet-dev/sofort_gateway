@@ -5,7 +5,7 @@
      *
      * @file          trosofortueberweisung_update.php
      * @link          http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
+     * @copyright (C) tronet GmbH 2018
      * @package       modules
      * @addtogroup    application/controllers/admin
      * @author        tronet GmbH
@@ -14,7 +14,7 @@
     class trosofortueberweisung_update extends oxAdminView
     {
         /**
-         * @var trosofortueberweisungreleaseoxlist $_oSOFORTReleaseList
+         * @var trosofortueberweisungreleaselist $_oSOFORTReleaseList
          * @author tronet GmbH
          * @since  7.0.0
          */
@@ -162,7 +162,7 @@
         /**
          * Getter for _oSOFORTReleaseList.
          *
-         * @return trosofortueberweisungreleaseoxlist
+         * @return trosofortueberweisungreleaselist
          * @author tronet GmbH
          * @since  7.0.0
          */
@@ -171,7 +171,7 @@
             if ($this->_oSOFORTReleaseList == null)
             {
                 $oSOFORTConfig = oxNew('trosofortueberweisungconfig');
-                $this->_oSOFORTReleaseList = $oSOFORTReleaseList = oxNew('trosofortueberweisungreleaseoxlist');
+                $this->_oSOFORTReleaseList = $oSOFORTReleaseList = oxNew('trosofortueberweisungreleaselist');
                 $this->_oSOFORTReleaseList->troSelectXmlUri($oSOFORTConfig->getReleaseListUrl());
             }
 

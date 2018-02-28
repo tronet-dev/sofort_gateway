@@ -1,59 +1,150 @@
 <?php
 
     /**
-     * @file      trosofortueberweisungoxpaymentgateway.php
-     * @link      http://www.tro.net
-     * @copyright (C) tronet GmbH 2017
-     * @package   modules
-     * @addtogroup models
-     * @extend oxpaymentgateway
-     */
-
-    /**
      * Payment gateway manager.
      * Checks and sets payment method data, executes payment.
      *
-     * NEW: redirects to SOFORT during paymentexecution
+     * @link          http://www.tro.net
+     * @copyright (c) tronet GmbH 2018
+     * @author        tronet GmbH
+     *
+     * @since         7.0.0
+     * @version       7.0.3
+     *
+     * @property string $sRedirUrl
      */
-    class trosofortueberweisungoxpaymentgateway extends trosofortueberweisungoxpaymentgateway_parent {
-
+    class trosofortueberweisungoxpaymentgateway extends trosofortueberweisungoxpaymentgateway_parent
+    {
         /**
          * Executes payment gateway functionality.
          *
          * @extend executePayment
          *
          * @param double $dAmount order price
-         * @param oxOrder $oOrder order object
+         * @param Order|TrosofortueberweisungOrder  $oOrder order object
          *
          * @return bool $mReturn
+         * @since         7.0.0
+         * @version       7.0.3
          */
-        public function executePayment($dAmount, & $oOrder)
+        public function executePayment($dAmount, &$oOrder)
         {
-            $oBasket = $this->getSession()->getBasket();
-            $sPaymentId = $oBasket->getPaymentId();
-
-            if ($sPaymentId == 'trosofortgateway_su')
+            if ($this->_oPaymentInfo->oxuserpayments__oxpaymentsid->value == 'trosofortgateway_su')
             {
-                $mReturn = $this->troExecutePayment($oOrder);
+                // Important hint: redirect is executed
+                $this->_troExecutePayment($oOrder);
             }
-            else
-            {
-                $mReturn = parent::executePayment($dAmount, $oOrder);
-            }
-
-            return $mReturn;
+            
+            return parent::executePayment($dAmount, $oOrder);
         }
 
         /**
-         * _replaceUmlauts
+         * _troExecutePayment
+         *
+         * Creates an object of type Sofortueberweisung and stores data in it.
+         *
+         * The in shop configured language is not transmitted as of request by SOFORT AG.
+         *
+         * At the end a redirect is performed.
+         *
+         * @param Order $oOrder order object
+         *
+         * @author  tronet GmbH
+         * @since    7.0.3
+         * @version  7.0.3
+         */
+        protected function _troExecutePayment(&$oOrder)
+        {
+            // Initialize
+            $oUser = $oOrder->getOrderUser();
+            $oConfig = $this->getConfig();
+            $oActiveShop = $oConfig->getActiveShop();
+
+            require_once( $oConfig->getModulesDir() . 'tronet/trosofortueberweisung/library/payment/sofortLibSofortueberweisung.inc.php');
+
+            // Prepare data for Sofortueberweisung
+            $sOrderTotalSumString = (string) number_format($oOrder->oxorder__oxtotalordersum->value, 2, ',', '');
+            $aTransactionPlaceholder = array(
+                '[BSTNR]' => $oOrder->oxorder__oxordernr->value,
+                '[KNR]'   => $oUser->oxuser__oxcustnr->value,
+                '[KNAME]' => $oUser->oxuser__oxlname->value,
+                '[DATUM]' => date('d.m.Y'),
+                '[PRICE]' => $sOrderTotalSumString,
+                '[SHP]'   => utf8_decode($oActiveShop->oxshops__oxname->value),
+            );
+
+            $aTransactionPlaceholderKeys = array_keys($aTransactionPlaceholder);
+            $aTransactionPlaceholderValues = array_values($aTransactionPlaceholder);
+
+            $sGatewayReason1 = str_replace($aTransactionPlaceholderKeys, $aTransactionPlaceholderValues, $oConfig->getConfigParam('sTroGatewayReason'));
+            $sGatewayReason2 = str_replace($aTransactionPlaceholderKeys, $aTransactionPlaceholderValues, $oConfig->getConfigParam('sTroGatewayReason2'));
+
+            $sGatewayReason1 = $this->_troReplaceUmlauts($sGatewayReason1);
+            $sGatewayReason2 = $this->_troReplaceUmlauts($sGatewayReason2);
+
+            // Force max gateway length.
+            $sGatewayReason1 = substr($sGatewayReason1, 0, 27);
+            $sGatewayReason2 = substr($sGatewayReason2, 0, 27);
+
+            // Create new Sofortueberweisung and fill with data
+            $oSofortueberweisung = new Sofortueberweisung($oConfig->getConfigParam('sTroGatewayConfKey'));
+            $oSofortueberweisung->setReason($sGatewayReason1, $sGatewayReason2);
+
+            $sUserCountryId = $oUser->oxuser__oxcountryid;
+            $oCountry = oxNew('oxCountry');
+            $oCountry->load($sUserCountryId);
+            $oSofortueberweisung->setSenderCountryCode($oCountry->oxcountry__oxisoalpha2);
+
+            $totalOrderSumAmount = round($oOrder->oxorder__oxtotalordersum->value, 2);
+            $oSofortueberweisung->setAmount($totalOrderSumAmount);
+
+            // force_sid
+            $force_sid = $oConfig->getRequestParameter('force_sid');
+            if (empty($force_sid))
+            {
+                $force_sid = $_COOKIE['force_sid'];
+            }
+            if (empty($force_sid))
+            {
+                $force_sid = $_SESSION['force_sid'];
+            }
+
+            ########################################
+            // Set urls
+            $oSofortueberweisung->setSuccessUrl($oConfig->getSslShopUrl().'?cl=order&fnc=troContinueExecute&transactionid=-TRANSACTION-&orderid='.$oOrder->oxorder__oxid->value.'&force_sid='.$force_sid);
+            $oSofortueberweisung->setAbortUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=troDeleteOldOrder&force_sid='.$force_sid);
+            $oSofortueberweisung->setTimeoutUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=troDeleteOldOrder&force_sid='.$force_sid);
+            $oSofortueberweisung->setNotificationUrl($oConfig->getSslShopUrl().'?cl=trosofortueberweisung_notification');
+
+            // Determine OXID eShop and trosofortueberweisung-Module-Version
+            $aModuleVersions = $oConfig->getConfigParam('aModuleVersions');
+            $sModuleVersion = 'oxid_'.$oConfig->getVersion().'; trosu_'.$aModuleVersions['trosofortueberweisung'];
+            $oSofortueberweisung->setVersion($sModuleVersion);
+
+            $oSofortueberweisung->setEmailCustomer($oUser->oxuser__oxusername->value);
+
+            $oSofortueberweisung->setCurrencyCode($oConfig->getActShopCurrencyObject()->name);
+
+            // After setting up an instance of Sofortueberweisung a request is send to the SOFORT API.
+            // SOFORT API responses with a URL to which current customer is redirected to.
+            $oSofortueberweisung->sendRequest();
+            $this->_troRedirect($oSofortueberweisung, $oOrder);
+        }
+
+        /**
+         * _troReplaceUmlauts
          *
          * Replaces umlaut as not every bank supports them in transferal reasons.
          *
          * @param string $sString The string to process.
          *
          * @return string
+         * 
+         * @author  tronet GmbH
+         * @since    7.0.0
+         * @version  7.0.0
          */
-        private function _replaceUmlauts($sString)
+        protected function _troReplaceUmlauts($sString)
         {
             $aSearch = array(
                 chr(192), chr(193), chr(194), chr(195), chr(196), chr(197), #A
@@ -107,138 +198,50 @@
         }
 
         /**
-         * troExecutePayment
-         *
-         * Creates an object of type Sofortueberweisung and stores data in it.
-         *
-         * The in shop configured language is not transmitted as of request by SOFORT AG.
-         *
-         * @param oxOrder $oOrder order object
-         *
-         * @return void
-         */
-        private function troExecutePayment($oOrder)
-        {
-            /*
-             * Initialize
-             */
-            $oUser = $oOrder->getOrderUser();
-            $oConfig = $this->getConfig();
-            $oShop = $oConfig->getActiveShop();
-
-            require_once( $oConfig->getModulesDir() . 'tronet/trosofortueberweisung/library/payment/sofortLibSofortueberweisung.inc.php');
-
-
-            // Prepare data for Sofortueberweisung
-            $aPlaceHolder = array(
-                '[BSTNR]' => $oOrder->oxorder__oxordernr->value,
-                '[KNR]'   => $oUser->oxuser__oxcustnr->value,
-                '[KNAME]' => $oUser->oxuser__oxlname->value,
-                '[DATUM]' => date('d.m.Y'),
-                '[PRICE]' => round($oOrder->oxorder__oxtotalordersum->value, 2),
-                '[SHP]'   => utf8_decode($oShop->oxshops__oxname->value),
-            );
-
-            $aPlaceHolderKeys = array_keys($aPlaceHolder);
-            $aPlaceHolderValues = array_values($aPlaceHolder);
-
-            $sGatewayReason1 = str_replace($aPlaceHolderKeys, $aPlaceHolderValues, $oConfig->getConfigParam('sTroGatewayReason'));
-            $sGatewayReason2 = str_replace($aPlaceHolderKeys, $aPlaceHolderValues, $oConfig->getConfigParam('sTroGatewayReason2'));
-
-            $aReason[0] = $this->_replaceUmlauts($sGatewayReason1);
-            $aReason[1] = $this->_replaceUmlauts($sGatewayReason2);
-
-            /*
-             * Create new Sofortueberweisung and fill with data
-             */
-            $oSofort = new Sofortueberweisung($oConfig->getConfigParam('sTroGatewayConfKey'));
-            $oSofort->setReason($aReason[0], $aReason[1]);
-
-            $sUserCountryId = $oUser->oxuser__oxcountryid;
-            $oCountry = oxNew('oxCountry');
-            $oCountry->load($sUserCountryId);
-            $oSofort->setSenderCountryCode($oCountry->oxcountry__oxisoalpha2);
-
-            $oSofort->setAmount(round($oOrder->oxorder__oxtotalordersum->value, 2));
-
-            // force_sid
-            $sid = $oConfig->getRequestParameter('force_sid');
-            if (empty($sid))
-            {
-                $sid = $_COOKIE['force_sid'];
-            }
-            if (empty($sid))
-            {
-                $sid = $_SESSION['force_sid'];
-            }
-
-            ########################################
-            // Set urls
-            $oSofort->setSuccessUrl($oConfig->getSslShopUrl().'?cl=order&fnc=continueExecute&transactionid=-TRANSACTION-&orderid='.$oOrder->oxorder__oxid->value.'&force_sid='.$sid);
-            $oSofort->setAbortUrl  ($oConfig->getSslShopUrl().'?cl=payment&fnc=deleteOldOrder&force_sid='.$sid);
-            $oSofort->setTimeoutUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=deleteOldOrder&force_sid='.$sid);
-            $oSofort->setNotificationUrl($oConfig->getSslShopUrl() . '?cl=trosofortueberweisung_notification');
-
-            // Determine OXID eShop and trosofortueberweisung-Module-Version
-            $aModuleVersions = $oConfig->getConfigParam('aModuleVersions');
-            $sModuleVersion = 'oxid_' . $oConfig->getVersion() . '; trosu_' . $aModuleVersions['trosofortueberweisung'];
-            $oSofort->setVersion($sModuleVersion);
-
-            $oSofort->setEmailCustomer($oUser->oxuser__oxusername->value);
-
-            $oSofort->setCurrencyCode($oConfig->getActShopCurrencyObject()->name);
-
-            // After setting up an instance of Sofortueberweisung a request is send to the SOFORT API.
-            // SOFORT API responses with a URL to which current customer is redirected to.
-            $oSofort->sendRequest();
-            $this->troRedirect($oSofort, $oOrder);
-        }
-
-        /**
          * checks for error and redirects to SOFORT or back to payment-view
          *
-         * @param object $oSofort Sofortlib object
-         * @param object $oOrder order object
+         * @param Sofortueberweisung $oSofortueberweisung
+         * @param Order              $oOrder order object
          *
-         * @return void
+         * @author  tronet GmbH
+         * @since   7.0.0
+         * @version 7.0.3
          */
-        public function troRedirect($oSofort, $oOrder)
+        protected function _troRedirect($oSofortueberweisung, &$oOrder)
         {
-            require_once( $this->getConfig()->getModulesDir() . 'tronet/trosofortueberweisung/library/core/sofortLibNotification.inc.php');
+            require_once($this->getConfig()->getModulesDir().'tronet/trosofortueberweisung/library/core/sofortLibNotification.inc.php');
 
-            if ($oSofort->isError())
+            if ($oSofortueberweisung->isError())
             {
                 // Data transmitted to SOFORT AG are invalid and cannot be processed by SOFORT AG.
                 $oLang = oxRegistry::getLang();
                 $sBaseLanguage = $oLang->getBaseLanguage();
                 $sErrorMessage = $oLang->translateString('TRO_SOFORTGATEWAY_PAYMENTERROR', $sBaseLanguage);
-                oxRegistry::get('oxutilsview')->addErrorToDisplay(
-                    $sErrorMessage, false, true
-                );
+                oxRegistry::get('oxutilsview')->addErrorToDisplay($sErrorMessage, false, true);
 
                 // Add a log entry
-                $aErrors = $oSofort->getErrors();
+                $aErrors = $oSofortueberweisung->getErrors();
                 if (is_array($aErrors))
                 {
-                    foreach ($aErrors as $aError)
+                    foreach ($aErrors as $aErrorDetails)
                     {
-                        $oEx = oxNew( "trosuexception", $aError['message'], $aError['code'], 'Payment-redirect to Sofort AG', $this->getConfig() );
-                        $oEx->debugOut();
+                        $oSofortException = oxNew("trosuexception", $aErrorDetails['message'], $aErrorDetails['code'], 'Payment-redirect to Sofort AG', $this->getConfig());
+                        $oSofortException->debugOut();
                     }
                 }
 
                 // Delete initiated order, show order step 3 (payment) and prompt him to choose an other payment
                 // method.
-                $this->sRedirUrl = $this->getConfig()->getSslShopUrl() . '?cl=payment&fnc=deleteOldOrder';
+                $this->sRedirUrl = $this->getConfig()->getSslShopUrl() . '?cl=payment&fnc=troDeleteOldOrder';
                 oxRegistry::getUtils()->redirect($this->sRedirUrl);
             }
             else
             {
                 // Data transmitted to SOFORT AG are valid. Save the Transaction-ID and redirect to SOFORT AG.
-                $sTransactionId = $oSofort->getTransactionId();
+                $sTransactionId = $oSofortueberweisung->getTransactionId();
                 $oOrder->oxorder__oxtransid = new oxField($sTransactionId);
                 $oOrder->save();
-                $this->sRedirUrl = $oSofort->getPaymentUrl();
+                $this->sRedirUrl = $oSofortueberweisung->getPaymentUrl();
                 oxRegistry::getUtils()->redirect($this->sRedirUrl);
             }
         }
