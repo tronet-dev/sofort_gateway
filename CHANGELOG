@@ -92,6 +92,10 @@
 *CHANGED: updated texts and images
 *CHANGED: performance update
 
+==7.0.3==
+*CHANGED: Order gets finalized even if the shopuser quits after paying at Sofort.
+*ADDED: Script to start by cronjob to delete all abandoned orders
+
 ==8.0.0==
 * CHANGED: Directory structure
 * CHANGED: SOFORT Lib is now included using Composer
@@ -106,3 +110,9 @@
 * DROPPED: Backwards compatibility for older versions in regards of language files
 * FIXED: Decimals of prices and comma were not properly displayed in gateway reason
 * FIXED: Order date were not updated accordingly when using browsers back button
+
+==8.0.1==
+* CHANGED: Order gets finalized even if the shopuser quits after paying at Sofort.
+* ADDED: Script to start by cronjob to delete all abandoned orders
+* UPDATED: to SOFORT Lib v3.*
+* UPDATED: to SOFORT Api v2.0

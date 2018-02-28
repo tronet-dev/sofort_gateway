@@ -3,7 +3,7 @@
      * Metadata file for module tronet/trosofortueberweisung.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         8.0.0
@@ -19,13 +19,13 @@
 
     $aModule = [
         'id'          => 'trosofortueberweisung',
-        'title'       => '<img height="10px" style="margin-top: 3px;" src="../modules/tronet/trosofortueberweisung/tronet.gif" /> Sofort.',
+        'title'       => '<img height="10px" style="margin-top: 3px;" src="../modules/tronet/trosofortueberweisung/out/img/tronet.gif" /> Sofort.',
         'description' => [
             'de' => 'Sofort. by tronet',
             'en' => 'Sofort. by tronet',
         ],
-        'thumbnail'   => "logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
-        'version'     => '8.0.0',
+        'thumbnail'   => "out/img/logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
+        'version'     => '8.0.1',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
@@ -68,6 +68,7 @@
         ],
         'controllers' => [
             // Controller - FE
+            'tronet_trosofortueberweisung_croncontroller'                                         => \Tronet\Trosofortueberweisung\Application\Controller\TrosofortueberweisungCronController::class,
             'tronet_trosofortueberweisung_notificationcontroller'                                 => \Tronet\Trosofortueberweisung\Application\Controller\TrosofortueberweisungNotificationController::class,
 
             // Controller - BE

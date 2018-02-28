@@ -9,7 +9,7 @@
      * Provides methods for logging actions.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         7.0.0

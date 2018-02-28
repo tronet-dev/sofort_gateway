@@ -3,7 +3,7 @@
      * Language file for OXID eShop.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         7.0.0
@@ -75,12 +75,12 @@
         'HELP_SHOP_MODULE_blTroGateWayShowLogoInDeliverAndPayment'      => 'In case the logo does not fit visually in your theme, you may deactivate it.',
         
         // general interface
-        'TRO_NEW_VERSION_AVAILABLE'                                     => 'A new version of Online Bank Transfer. is available. You may update it via composer.',
+        'TRO_NEW_VERSION_AVAILABLE'                                     => 'A new version of Sofort. is available. You may update it via composer.',
         'TRO_NEW_VERSION_ALREADY_INSTALLED'                             => 'You have already installed the latest module release.',
         'TRO_NEW_VERSION_AVAILABLE_FAILED'                              => 'An error occured',
         'TRO_NEW_VERSION_AVAILABLE_FAILED_MESSAGE'                      => 'Latest Sofort-Module-Releases could not be fetched.',
         'TRO_VERSION_DOWNLOAD'                                          => 'Download new Version (%1$s)',
-        'TRO_SOFORT_BY_TRONET'                                          => 'Online Bank Transfer. by tronet GmbH',
+        'TRO_SOFORT_BY_TRONET'                                          => 'Sofort. by tronet GmbH',
         'TRO_CHANGE_LOG_URL_DESCRIPTION'                                => 'Open the change log',
 
         // general interface :: update routine
@@ -105,7 +105,7 @@
         // OXID eShop navigation
         'TRONET_MENU_HEAD'                                              => 'tronet',
         'mxtronotifications'                                            => 'Sofortgateway-Log',
-        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/trosofortueberweisung/tronet.gif" alt="[tronet]"/> Sofort.',
+        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/trosofortueberweisung/out/img/tronet.gif" alt="[tronet]"/> Sofort.',
         'mxtrosofortueberweisung_dashboard'                             => 'Dashboard',
         'mxtrosofortueberweisung_main'                                  => 'Main',
 

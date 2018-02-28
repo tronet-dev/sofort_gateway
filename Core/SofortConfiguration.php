@@ -8,7 +8,7 @@
      * Contains e.g. links to change log or release list in xml format.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         7.0.0
@@ -45,6 +45,13 @@
         protected $_sLogFile;
 
         /**
+         * @const string API_VERSION
+         * @author tronet GmbH
+         * @since  8.0.1
+         */
+        const API_VERSION = '2.0';
+        
+        /**
          * SofortConfiguration constructor.
          * 
          * @author tronet GmbH
@@ -54,7 +61,7 @@
         public function __construct()
         {
             $this->_setTroChangeLogUrl('http://sofort.tro.net/trosofortueberweisung_changelog.txt');
-            $this->_setTroReleaseListUrl('http://sofort.tro.net/Versions/__INTERNE_TESTS__trosofortueberweisung_versions.xml');
+            $this->_setTroReleaseListUrl('http://sofort.tro.net/Versions/trosofortueberweisung_versions.xml');
             $this->_setTroMetaHashLinkRaw('http://sofort.tro.net/Module-File-Hashes/trometahashes_%1$s.xml');
             $this->_setTroLogFile('SOFORTGATEWAY_LOG.txt');
         }
@@ -169,5 +176,19 @@
         public function getTroLogFile()
         {
             return $this->_sLogFile;
+        }
+
+        /**
+         * Get the API-Version.
+         *
+         * @return string $this->_sApiVersion
+         * 
+         * @author tronet GmbH
+         * @since  8.0.1
+         * @version 8.0.1
+         */
+        public static function getTroApiVersion()
+        {
+            return self::API_VERSION;
         }
     }

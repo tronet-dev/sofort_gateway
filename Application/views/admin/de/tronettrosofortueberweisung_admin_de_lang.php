@@ -3,7 +3,7 @@
      * Language file for OXID eShop.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         7.0.0
@@ -106,7 +106,7 @@
         // OXID eShop navigation
         'TRONET_MENU_HEAD'                                              => 'tronet',
         'mxtronotifications'                                            => 'Sofortgateway-Log',
-        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/trosofortueberweisung/tronet.gif" alt="[tronet]"/> Sofort.',
+        'mxtrosofortueberweisung'                                       => '<img height="10px" style="margin-top: 3px;"  src="../modules/tronet/trosofortueberweisung/out/img/tronet.gif" alt="[tronet]"/> Sofort.',
         'mxtrosofortueberweisung_dashboard'                             => 'Dashboard',
         'mxtrosofortueberweisung_main'                                  => 'Stamm',
 

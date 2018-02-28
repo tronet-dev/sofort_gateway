@@ -1,4 +1,4 @@
-# Sofort. by ![alt text](tronet.gif)
+# Sofort. by ![alt text](out/img/tronet.gif)
 
 This repository contains the sources & documentation for the module tronet/trosofortueberweisung.
 
@@ -6,7 +6,7 @@ This file gives you a quick briefing about the module. A more detailed descripti
 
 ## DESCRIPTION
 
-The OXID eShop interface for Online Bank Transfer. (further references as Sofort.) extends an existing installation of the software OXID eShop by the
+The OXID eShop interface for Sofort. extends an existing installation of the software OXID eShop by the
 payment method Sofort.
 
 OXID eShop is a software by OXID eSales GmbH, Freiburg, Germany. It is
@@ -28,7 +28,7 @@ Install the `tronet/trosofortueberweisung` package using [composer](https://getc
 ```
 {
     "require": {
-        "tronet/trosofortueberweisung": "^8.0.0"
+        "tronet/trosofortueberweisung": "^8.0.1"
     }
 }
 ```
@@ -44,13 +44,13 @@ You can update SOFORT Überweisung and it's dependencies by running `php compose
 
 ## Supported OXID eShop versions
 
-Latest stable SOFORT module release: 7.0.0<br/>
-Currently in development: 8.0.0
+Latest stable SOFORT module release: 7.0.3<br/>
+Currently in development: 8.0.1
 
 |Module version| supported OXID eShop version
 |:------------:|:---------------------------:
-|8.0.0         | 6.0.0-RC.2
-|7.0.0         | 4.7 - 4.10
+|8.0.1         | 6.0.0-RC.2
+|7.0.3         | 4.7 - 4.10
 
 For older versions and how to update to newer versions see the documentation file `/docs/readme_en.pdf`.
 

@@ -14,7 +14,7 @@
      * NEW: deletes oxorder-object from DB
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         7.0.0
@@ -52,12 +52,12 @@
          */
         public function validatePayment()
         {
-            $sPaymentId = $this->getConfig()->getRequestParameter('paymentid');
-            if ($sPaymentId === 'trosofortgateway_su')
+            $sPaymentId = Registry::getConfig()->getRequestParameter('paymentid');
+            if ($sPaymentId == 'trosofortgateway_su')
             {
                 // Determine current currency
-                $sCurrency = $this->getConfig()->getActShopCurrencyObject()->name;
-                if (!in_array($sCurrency, $this->_aSupportedCurrencies, true))
+                $sCurrency = Registry::getConfig()->getActShopCurrencyObject()->name;
+                if (!in_array($sCurrency, $this->_aSupportedCurrencies))
                 {
                     // Show order step 3, so that the customer can switch payment type.
                     $oStandardException = oxNew(StandardException::class);

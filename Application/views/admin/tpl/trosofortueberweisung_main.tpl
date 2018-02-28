@@ -1,13 +1,13 @@
 [{include file="headitem.tpl" title="CONTENT_MAIN_TITLE"|oxmultilangassign}]
 
-<link rel="stylesheet" href="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/out/admin/src/css/trosofortueberweisung.css">
-<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung', '/out/admin/src/css/jquery-ui.min.css')}]"/>
-<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung', '/out/admin/src/css/jquery-ui.structure.min.css')}]"/>
-<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung', '/out/admin/src/css/jquery-ui.theme.min.css')}]"/>
+<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung')}]/out/admin/src/css/trosofortueberweisung.css"/>
+<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung')}]/out/admin/src/css/jquery-ui.min.css"/>
+<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung')}]/out/admin/src/css/jquery-ui.structure.min.css"/>
+<link rel="stylesheet" href="[{$oViewConf->getModuleUrl('trosofortueberweisung')}]/out/admin/src/css/jquery-ui.theme.min.css"/>
 
 <div id="tro-sofort-main-page-wrap">
     <h2>
-        <img src="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/tronet.gif"/> [{oxmultilang ident="TRO_SOFORT_BY_TRONET"}]
+        <img src="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/out/img/tronet.gif"/> [{oxmultilang ident="TRO_SOFORT_BY_TRONET"}]
     </h2>
     <p>
         [{oxmultilang ident="TRO_SOFORT_UPDATE_MAIN_INTROTEXT"}]
@@ -73,8 +73,8 @@
     [{/if}]
 </div>
 <div class="tro-sofort-bottom-image-container">
-    <a href="https://www.tronet.media" target="_blank"><img class="tro-sofort-bottom-left-1" src="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/logo_tronet.media.png"/></a>
-    <a href="https://www.sofort.com" target="_blank"><img class="tro-sofort-bottom-left-2" src="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/logo_sofort.php?language=be_[{oxmultilang ident='TRO_CURRENT_LANGUAGE'}]&columns=150&rows=33"/></a>
+    <a href="https://www.tronet.media" target="_blank"><img class="tro-sofort-bottom-left-1" src="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/out/img/logo_tronet.media.png"/></a>
+    <a href="https://www.sofort.com" target="_blank"><img class="tro-sofort-bottom-left-2" src="[{$oViewConf->getBaseDir()}]modules/tronet/trosofortueberweisung/out/img/logo_sofort.php?language=be_[{oxmultilang ident='TRO_CURRENT_LANGUAGE'}]&columns=150&rows=33"/></a>
 </div>
                         
 [{include file="bottomnaviitem.tpl"}]

@@ -15,7 +15,7 @@
      * Admin Menu: Orders -> Display Orders -> log.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @since         7.0.0
@@ -110,9 +110,9 @@
                 $oOrder = oxNew(Order::class);
                 $oOrder->load($sOxid);
 
-                $oDatabaseProvider = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+                $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
                 $sSqlSelect = "select * from trogatewaylog where transactionid='{$oOrder->oxorder__oxtransid->value}' order by timestamp DESC";
-                $aData = $oDatabaseProvider->getAll($sSqlSelect);
+                $aData = $oDb->getAll($sSqlSelect);
 
                 $oTrosofortueberweisungGatewayLog->assign($aData);
             }

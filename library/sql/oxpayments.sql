@@ -7,7 +7,7 @@ SET
     `OXID`          = 'trosofortgateway_su',
     `OXACTIVE`      = 1,
     `OXDESC`        = 'Sofort.',
-    `OXDESC_1`      = 'Online Bank Transfer.',
+    `OXDESC_1`      = 'Sofort.',
     `OXADDSUM`      = 0,
     `OXADDSUMTYPE`  = 'abs',
     `OXADDSUMRULES` = 15,

@@ -10,6 +10,7 @@
         "payment",
         "klarna",
         "Pay now",
+        "online bank transfer",
         "Sofort"
     ],
     "homepage": "https://www.sofort.com",
@@ -28,6 +29,6 @@
         }
     },
     "require": {
-        "sofort/sofortlib-php": "3.3.0"
+        "sofort/sofortlib-php": "3.*"
     }
 }

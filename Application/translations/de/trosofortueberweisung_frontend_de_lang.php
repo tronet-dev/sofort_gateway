@@ -3,7 +3,7 @@
      * Language file for OXID eShop.
      *
      * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2017
+     * @copyright (c) tronet GmbH 2018
      * @author        tronet GmbH
      *
      * @version       8.0.0
