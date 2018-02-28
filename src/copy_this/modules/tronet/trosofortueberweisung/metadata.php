@@ -54,9 +54,10 @@
         'files'       => array(
             'trosofortueberweisungevents'               => 'tronet/trosofortueberweisung/core/trosofortueberweisungevents.php',
             'trosuexception'                            => 'tronet/trosofortueberweisung/core/exception/trosuexception.php',
-            'trosofortueberweisungupdateutility'        => 'tronet/trosofortueberweisung/core/utility/trosofortueberweisungupdateutility.php',
             'trosofortueberweisungconfig'               => 'tronet/trosofortueberweisung/core/trosofortueberweisungconfig.php',
+            'trosofortueberweisungupdateutility'        => 'tronet/trosofortueberweisung/core/utility/trosofortueberweisungupdateutility.php',
             'trosofortueberweisungdirectoryutility'     => 'tronet/trosofortueberweisung/core/utility/trosofortueberweisungdirectoryutility.php',
+            'trosofortueberweisungcurlutility'          => 'tronet/trosofortueberweisung/core/utility/trosofortueberweisungcurlutility.php',
             'trosofortueberweisunggatewaylog'           => 'tronet/trosofortueberweisung/application/models/trosofortueberweisunggatewaylog.php',
             'trosofortueberweisungrelease'              => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungrelease.php',
             'trosofortueberweisungreleaserequirements'  => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungreleaserequirements.php',
@@ -68,7 +69,6 @@
             'trosofortueberweisung_main'                => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_main.php',
             'trosofortueberweisung_update'              => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_update.php',
             'trosofortueberweisungreleaselist'          => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungreleaselist.php',
-            'trosofortueberweisungcurl'                 => 'tronet/trosofortueberweisung/core/utility/trosofortueberweisungcurl.php',
         ),
         'templates'   => array(
             'trosofortueberweisungorder_notifications.tpl'     => 'tronet/trosofortueberweisung/application/views/admin/tpl/trosofortueberweisungorder_notifications.tpl',

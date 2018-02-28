@@ -201,7 +201,7 @@
             if ($this->_troUrlExists($sDownloadFile))
             {
                 /** @var trosofortueberweisungcurl $oSOFORTcURL */
-                $oSOFORTcURL = oxNew('trosofortueberweisungcurl', $sDownloadFile);
+                $oSOFORTcURL = oxNew('trosofortueberweisungcurlutility', $sDownloadFile);
                 $oSOFORTcURL->curlSetOpt(CURLOPT_RETURNTRANSFER, 1);
                 $oXML = $oSOFORTcURL->curlExec();
                 $oSOFORTcURL->closeCh();

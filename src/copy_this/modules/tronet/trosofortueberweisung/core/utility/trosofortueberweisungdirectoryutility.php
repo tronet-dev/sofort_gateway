@@ -3,7 +3,7 @@
     /**
      * Provides methods for directory actions.
      *
-     * @file          trosofortueberweisungupdateutility.php
+     * @file          trosofortueberweisungdirectoryutility.php
      * @link          http://www.tro.net
      * @copyright (C) tronet GmbH 2018
      * @package       modules
@@ -11,7 +11,7 @@
      * @author        tronet GmbH
      * @since         7.0.0
      */
-    class trosofortueberweisungdirectory
+    class trosofortueberweisungdirectoryutility
     {
         /**
          * @var trosofortueberweisungloggingutility $_oTroLoggingUtility

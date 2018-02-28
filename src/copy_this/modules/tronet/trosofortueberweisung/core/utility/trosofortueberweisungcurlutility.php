@@ -1,8 +1,8 @@
 <?php
     /**
-     * Class trosofortueberweisungcurl
+     * Class trosofortueberweisungcurlutility
      *
-     * @file    trosofortueberweisungcurl.php
+     * @file    trosofortueberweisungcurlutility.php
      * @link    http://www.tronet.media
      * @author  tronet GmbH
      * @since   7.0.2
