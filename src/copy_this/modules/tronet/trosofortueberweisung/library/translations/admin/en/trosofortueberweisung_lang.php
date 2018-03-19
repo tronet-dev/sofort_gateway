@@ -71,8 +71,8 @@
                                                                             as there is a new module version for your OXID version.',
         
         'SHOP_MODULE_GROUP_troOtherSettings'                            => 'Other',
-        'SHOP_MODULE_blTroGateWayShowLogoInDeliverAndPayment'           => 'Show logo in order step 3 "Pay".',
-        'HELP_SHOP_MODULE_blTroGateWayShowLogoInDeliverAndPayment'      => 'In case the logo does not fit visually in your theme, you may deactivate it.',
+        'SHOP_MODULE_blTroGateWayShowLogoInPayment'                     => 'Show logo in order step 3 "Pay".',
+        'HELP_SHOP_MODULE_blTroGateWayShowLogoInPayment'                => 'In case the logo does not fit visually in your theme, you may deactivate it.',
         
         // general interface
         'TRO_NEW_VERSION_AVAILABLE'                                     => 'A new version of Sofort. is available',

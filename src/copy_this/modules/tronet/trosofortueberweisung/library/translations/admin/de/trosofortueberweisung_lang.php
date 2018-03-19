@@ -72,8 +72,8 @@
                                                                             es f&uuml;r Ihre OXID Version eine neue Modulversion gibt.',
         
         'SHOP_MODULE_GROUP_troOtherSettings'                            => 'Sonstiges',
-        'SHOP_MODULE_blTroGateWayShowLogoInDeliverAndPayment'           => 'Zeige das Logo im Bestellschritt 3 "Versand & Zahlungsart".',
-        'HELP_SHOP_MODULE_blTroGateWayShowLogoInDeliverAndPayment'      => 'Falls das Logo visuell nicht in Ihr Theme passt, k&ouml;nnen Sie es deaktivieren.',
+        'SHOP_MODULE_blTroGateWayShowLogoInPayment'                     => 'Zeige das Logo im Bestellschritt 3 "Versand & Zahlungsart".',
+        'HELP_SHOP_MODULE_blTroGateWayShowLogoInPayment'                => 'Falls das Logo visuell nicht in Ihr Theme passt, k&ouml;nnen Sie es deaktivieren.',
         
         // general interface
         'TRO_NEW_VERSION_AVAILABLE'                                     => 'Eine Neue Version von Sofort. ist zum Download verf&uuml;gbar.',

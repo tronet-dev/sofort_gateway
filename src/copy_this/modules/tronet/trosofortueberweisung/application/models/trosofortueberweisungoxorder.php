@@ -6,7 +6,7 @@
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       7.0.3
+ * @version       7.0.4
  */
 class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent 
 {
@@ -42,15 +42,43 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      *
      * @author  tronet GmbH
      * @since   7.0.3
-     * @version 7.0.3
+     * @version 7.0.4
      */
-    public function getTroOrderBasket($blStockCheck = true)
+    public function getTroOrderBasket($blTroUseArticleInsteadOfOrderArticle = true)
     {
-        $oBasket = $this->_getOrderBasket($blStockCheck);
-        $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        $oBasket = $this->_getOrderBasket();
+        if ($blTroUseArticleInsteadOfOrderArticle)
+        {
+            $this->_troAddArticlesFromOrderToBasket($oBasket, $this->getOrderArticles(true));
+        }
+        else
+        {
+            $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        }
         $oBasket->calculateBasket(true);
 
         return $oBasket;
+    }
+    
+    /**
+     * Lädt oxarticle statt oxorderarticles Objekte in das oxbasket-Objekt
+     * Bassiert auf oxorder._addOrderArticlesToBasket()
+     *
+     * @author  tronet GmbH
+     * @since   7.0.4
+     * @version 7.0.4
+     */
+    protected function _troAddArticlesFromOrderToBasket($oBasket, $aOrderArticles)
+    {
+        // if no order articles, return empty basket
+        if (count($aOrderArticles) > 0) {
+
+            //adding order articles to basket
+            foreach ($aOrderArticles as $oOrderArticle) {
+                $oOrderArticle->setTroUseArticleInsteadOfOrderArticle();
+                $oBasket->addOrderArticleToBasket($oOrderArticle);
+            }
+        }
     }
 
     /**
@@ -190,6 +218,9 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
         } else {
             $iRet = self::ORDER_STATE_OK;
         }
+        
+        // Reset: Lade nun oxorderarticles statt oxarticles in das oxbasket-Objekt
+        $oBasket = $this->getTroOrderBasket(false);
 
         // Call the original finalizeOrder method. In case the method is extended by other modules,
         // this makes sure those features are executed as well.

@@ -9,9 +9,9 @@
         <dd class="[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
             <div class="desc">
                 [{assign var="oTroConfig" value=$oView->getConfig()}]
-                [{assign var="blTroGateWayShowLogoInDeliverAndPayment" value=$oTroConfig->getConfigParam('blTroGateWayShowLogoInDeliverAndPayment')}]
+                [{assign var="blTroGateWayShowLogoInPayment" value=$oTroConfig->getConfigParam('blTroGateWayShowLogoInPayment')}]
 
-                [{if $blTroGateWayShowLogoInDeliverAndPayment}]
+                [{if $blTroGateWayShowLogoInPayment}]
                     [{if $oViewConf->getActLanguageAbbr() == 'de'}]
                         <a href="https://www.sofort.com/" target="_blank">
                             <img src="https://cdn.klarna.com/1.0/shared/image/generic/badge/xx_XX/pay_now/standard/pink.svg" alt="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" title="[{oxmultilang ident="TRO_SOFORT_BANNER_IMG_TITLE"}]" height="75" width="100">

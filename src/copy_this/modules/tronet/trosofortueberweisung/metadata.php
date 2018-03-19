@@ -20,7 +20,7 @@
             'en' => 'Sofort. by tronet',
         ),
         'thumbnail'   => 'logo_sofort.png',
-        'version'     => '7.0.3',
+        'version'     => '7.0.4',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'http://www.tro.net',
@@ -87,6 +87,8 @@
         'extend'      => array(
             'oxpaymentgateway' => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxpaymentgateway',
             'oxorder'          => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxorder',
+            'oxorderarticle'   => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxorderarticle',
+            'oxbasketitem'     => 'tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasketitem',
             'order'            => 'tronet/trosofortueberweisung/application/controllers/trosofortueberweisungorder',
             'payment'          => 'tronet/trosofortueberweisung/application/controllers/trosofortueberweisungpayment',
             'navigation'       => 'tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_navigation',
@@ -125,10 +127,9 @@
             ),
             array(
                 'group' => 'troOtherSettings',
-                'name'  => 'blTroGateWayShowLogoInDeliverAndPayment',
+                'name'  => 'blTroGateWayShowLogoInPayment',
                 'type'  => 'bool',
                 'value' => '1',
             ),
         ),
-
     );
