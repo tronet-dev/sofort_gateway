@@ -4,6 +4,7 @@ namespace Tronet\Trosofortueberweisung\Application\Model;
 
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Application\Model\UserPayment;
 use OxidEsales\Eshop\Application\Model\Payment;
@@ -21,8 +22,8 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
  * @copyright (c) tronet GmbH 2018
  * @author        tronet GmbH
  *
- * @since         7.0.0
- * @version       8.0.1
+ * @since         8.0.0
+ * @version       8.0.2
  */
 class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 {
@@ -58,15 +59,43 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      *
      * @author  tronet GmbH
      * @since   8.0.0
-     * @version 8.0.0
+     * @version 8.0.2
      */
-    public function getTroOrderBasket($blStockCheck = true)
+    public function getTroOrderBasket($blTroUseArticleInsteadOfOrderArticle = true)
     {
         $oBasket = $this->_getOrderBasket($blStockCheck);
-        $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        if ($blTroUseArticleInsteadOfOrderArticle)
+        {
+            $this->_troAddArticlesFromOrderToBasket($oBasket, $this->getOrderArticles(true));
+        }
+        else
+        {
+            $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        }
         $oBasket->calculateBasket(true);
 
         return $oBasket;
+    }
+
+    /**
+     * Lädt oxarticle statt oxorderarticles Objekte in das oxbasket-Objekt
+     * Bassiert auf oxorder._addOrderArticlesToBasket()
+     *
+     * @author  tronet GmbH
+     * @since   8.0.2
+     * @version 8.0.2
+     */
+    protected function _troAddArticlesFromOrderToBasket($oBasket, $aOrderArticles)
+    {
+        // if no order articles, return empty basket
+        if (count($aOrderArticles) > 0) {
+
+            //adding order articles to basket
+            foreach ($aOrderArticles as $oOrderArticle) {
+                $oOrderArticle->setTroUseArticleInsteadOfOrderArticle();
+                $oBasket->addOrderArticleToBasket($oOrderArticle);
+            }
+        }
     }
 
     /**
@@ -199,6 +228,9 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 
             throw $exception;
         }
+
+        // Reset: Lade nun oxorderarticles statt oxarticles in das oxbasket-Objekt
+        $oBasket = $this->getTroOrderBasket(false);
 
         // Call the original finalizeOrder method. In case the method is extended by other modules,
         // this makes sure those features are executed as well.

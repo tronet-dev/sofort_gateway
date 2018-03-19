@@ -7,6 +7,7 @@
      * @author        tronet GmbH
      *
      * @since         8.0.0
+     * @version       8.0.2
      */
     $sMetadataVersion = '2.0';
 
@@ -25,7 +26,7 @@
             'en' => 'Sofort. by tronet',
         ],
         'thumbnail'   => "out/img/logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
-        'version'     => '8.0.1',
+        'version'     => '8.0.2',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
@@ -76,12 +77,13 @@
             'tronet_trosofortueberweisung_admin_trosofortueberweisunglistcontroller'              => \Tronet\Trosofortueberweisung\Application\Controller\Admin\TrosofortueberweisungListController::class,
             'tronet_trosofortueberweisung_admin_trosofortueberweisungmaincontroller'              => \Tronet\Trosofortueberweisung\Application\Controller\Admin\TrosofortueberweisungMainController::class,
             'tronet_trosofortueberweisung_admin_trosofortueberweisungordernotificationcontroller' => \Tronet\Trosofortueberweisung\Application\Controller\Admin\TrosofortueberweisungOrderNotificationController::class,
-            'tronet_trosofortueberweisung_admin_trosofortueberweisungupdatecontroller'            => \Tronet\Trosofortueberweisung\Application\Controller\Admin\TrosofortueberweisungUpdateController::class,
         ],
         'extend'      => [
             // Model
             \OxidEsales\Eshop\Application\Model\PaymentGateway::class                  => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungPaymentGateway::class,
             \OxidEsales\Eshop\Application\Model\Order::class                           => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungOrder::class,
+            \OxidEsales\Eshop\Application\Model\OrderArticle::class                    => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungOrderArticle::class,
+            \OxidEsales\Eshop\Application\Model\BasketItem::class                      => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungBasketItem::class,
 
             // Controller - FE
             \OxidEsales\Eshop\Application\Controller\OrderController::class            => \Tronet\Trosofortueberweisung\Application\Controller\TrosofortueberweisungOrderController::class,

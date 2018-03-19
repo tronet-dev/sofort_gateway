@@ -2,7 +2,7 @@
 
 This repository contains the sources & documentation for the module tronet/trosofortueberweisung.
 
-This file gives you a quick briefing about the module. A more detailed description is available in the file `/docs/readme_en.pdf`.
+This file gives you a quick briefing about the module. A more detailed description is available in the file `/docs/readme_de.pdf`.
 
 ## DESCRIPTION
 
@@ -20,39 +20,23 @@ The SOFORT AG charges transaction fees for using the service.
 ## Prerequirements
 
 * A merchant account at the SOFORT AG. You can create one [here](https://www.sofort.com/eng-DE/verkaeufer/su/e-payment-sofort-ueberweisung/)
-* An installed OXID eShop >=6.0.0-RC.2
+* An installed OXID eShop 6.0.x
 
 ## Install
 
 Install the `tronet/trosofortueberweisung` package using [composer](https://getcomposer.org/):
-```
-{
-    "require": {
-        "tronet/trosofortueberweisung": "^8.0.1"
-    }
-}
-```
-
-When the `tronet/trosofortueberweisung` package is installed following dependencies
-are resolved:
-
-* `sofort/sofortlib-php` v3.3.0. See [sofort/sofortlib-php on GitHub](https://github.com/sofort/sofortlib-php)
+composer require tronet/trosofortueberweisung:^8.0
 
 ## Update
 
-You can update SOFORT Überweisung and it's dependencies by running `php composer update`.
+You can update SOFORT Überweisung and its dependencies by running `composer update`.
 
 ## Supported OXID eShop versions
 
-Latest stable SOFORT module release: 7.0.3<br/>
-Currently in development: 8.0.1
-
 |Module version| supported OXID eShop version
 |:------------:|:---------------------------:
-|8.0.1         | 6.0.0-RC.2
-|7.0.3         | 4.7 - 4.10
-
-For older versions and how to update to newer versions see the documentation file `/docs/readme_en.pdf`.
+|8.0.2         | 6.0
+|7.0.4         | 4.7 - 4.10
 
 ## FAQ
 

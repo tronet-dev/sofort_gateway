@@ -96,23 +96,29 @@
 *CHANGED: Order gets finalized even if the shopuser quits after paying at Sofort.
 *ADDED: Script to start by cronjob to delete all abandoned orders
 
+==7.0.4==
+*FIXED: Bug, Module-Settings-Name was longer than 32 characters which Oxid < 4.9 cannot handle
+*FIXED: Bug, imgaes couldn't be rendered in emails
+
 ==8.0.0==
-* CHANGED: Directory structure
-* CHANGED: SOFORT Lib is now included using Composer
-* CHANGED: adjustments to OXID eShop v6 standard
-* CHANGED: Replace umlauts can now be overridden in case it does not work on a specific system
-* ADDED: Notification controller may be used to fetch & update orders according to the current SOFORT status
-* UPDATED: to SOFORT Lib v3.3.0
-* UPDATED: phpDoc
-* DROPPED: directory /tronet/trosofortueberweisung/library/payment/
-* DROPPED: directory /tronet/trosofortueberweisung/library/core/
-* DROPPED: Update routine itself. Use Composer instead
-* DROPPED: Backwards compatibility for older versions in regards of language files
-* FIXED: Decimals of prices and comma were not properly displayed in gateway reason
-* FIXED: Order date were not updated accordingly when using browsers back button
+*CHANGED: Logo of SOFORT is fetched from SOFORT server all the time
+*CHANGED: Replace umlauts can now be overridden in case it does not work on a specific system
+*ADDED: Notification controller may be used to fetch & update orders according to the current SOFORT status
+*UPDATED: to SOFORT Lib v3.3.0
+*UPDATED: phpDoc
+*DROPPED: directory /tronet/trosofortueberweisung/library/payment/
+*DROPPED: directory /tronet/trosofortueberweisung/library/core/
+*DROPPED: Update routine itself. Use Composer instead
+*CHANGED: adjustments to OXID eShop v6 standard
+*DROPPED: Backwards compatibility for older versions in regards of language files
+*FIXED: Decimals of prices and comma were not properly displayed in gateway reason
+*FIXED: Order date were not updated accordingly when using browsers back button
 
 ==8.0.1==
-* CHANGED: Order gets finalized even if the shopuser quits after paying at Sofort.
-* ADDED: Script to start by cronjob to delete all abandoned orders
-* UPDATED: to SOFORT Lib v3.*
-* UPDATED: to SOFORT Api v2.0
+*CHANGED: Order gets finalized even if the shopuser quits after paying at Sofort.
+*ADDED: Script to start by cronjob to delete all abandoned orders
+*UPDATED: to SOFORT Lib v3.*
+*UPDATED: to SOFORT Api v2.0
+
+==8.0.2==
+*FIXED: Bug, imgaes couldn't be rendered in emails
