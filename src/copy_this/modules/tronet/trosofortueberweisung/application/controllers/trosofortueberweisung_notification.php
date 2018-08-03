@@ -11,7 +11,7 @@
      * @author        tronet GmbH
      *
      * @since         7.0.0
-     * @version       7.0.3
+     * @version       7.0.5
      */
     class trosofortueberweisung_notification extends oxUBase
     {
@@ -19,7 +19,7 @@
          * process the transaction status
          *
          * @throws ConnectionException from SofortueberweisungNotificationController::_troUpdateOrderRoutine()
-         * 
+         *
          * @author  tronet GmbH
          * @since   7.0.0
          * @version 7.0.3
@@ -39,7 +39,7 @@
          * Wrapper function to update order depending on the transactions status
          *
          * @throws ConnectionException from _troCancelOrder or _troSetOrderPaid
-         * 
+         *
          * @author  tronet GmbH
          * @since   7.0.3
          * @version 7.0.3
@@ -110,13 +110,13 @@
                     oxRegistry::getUtils()->showMessageAndExit('No info received');
                 }
             }
-            
+
             return $sTransactionId;
         }
 
         /**
          * @return Notification
-         * 
+         *
          * @author  tronet GmbH
          * @since   7.0.3
          * @version 7.0.3
@@ -152,7 +152,7 @@
 
         /**
          * @return TransactionData
-         * 
+         *
          * @author  tronet GmbH
          * @since   7.0.3
          * @version 7.0.3
@@ -177,7 +177,7 @@
             $sTransactionId = $oTransactionData->getTransaction();
             $oTroGatewayLog = oxNew('trosofortueberweisunggatewaylog');
             $aTroGatewayLogNewestEntry = $oTroGatewayLog->getTroNewestLog($sTransactionId);
-            
+
             // Datum des bereits in der Datenbank gespeicherten Eintrags ist ungleich der aktuell vorliegenden Statusaenderung
             if ($aTroGatewayLogNewestEntry['STATUS'] != $oTransactionData->getStatus())
             {
@@ -188,9 +188,9 @@
                 $oTroGatewayLog->save();
             }
         }
-        
+
         /**
-         * Wird nach Bezahlung auf der Seite von Sofortueberweisung 
+         * Wird nach Bezahlung auf der Seite von Sofortueberweisung
          * z.B. der Browser geschlossen
          * und der User nicht mehr in den Shop zurückgeleitet,
          * führe die Bestellung nun zu Ende
@@ -199,7 +199,7 @@
          *
          * @author  tronet GmbH
          * @since   7.0.3
-         * @version 7.0.3
+         * @version 7.0.5
          */
         protected function _troFinalizeOrderIfStatusNotFinished($oTransactionData)
         {
@@ -212,6 +212,8 @@
              && $oOrder->oxorder__oxtransstatus->value == 'NOT_FINISHED'
              && $oOrder->oxorder__oxtransid->value == $sTransactionId)
             {
+                $this->setAdminMode(true);
+
                 $oUser = $oOrder->getOrderUser();
                 $oBasket = $oOrder->getTroOrderBasket();
 
@@ -230,7 +232,7 @@
          * @param TransactionData $oTransactionData
          *
          * @throws ConnectionException
-         * 
+         *
          * @author  tronet GmbH
          * @since   7.0.3
          * @version 7.0.3
@@ -260,7 +262,7 @@
          * @param TransactionData $oTransactionData
          *
          * @throws ConnectionException
-         * 
+         *
          * @author  tronet GmbH
          * @since   7.0.3
          * @version 7.0.3

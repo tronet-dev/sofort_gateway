@@ -6,7 +6,7 @@
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       7.0.4
+ * @version       7.0.5
  */
 class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent 
 {
@@ -42,11 +42,13 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      *
      * @author  tronet GmbH
      * @since   7.0.3
-     * @version 7.0.4
+     * @version 7.0.5
      */
     public function getTroOrderBasket($blTroUseArticleInsteadOfOrderArticle = true)
     {
         $oBasket = $this->_getOrderBasket();
+        $this->_oArticles = null;
+        
         if ($blTroUseArticleInsteadOfOrderArticle)
         {
             $this->_troAddArticlesFromOrderToBasket($oBasket, $this->getOrderArticles(true));
@@ -62,7 +64,7 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
     
     /**
      * Lädt oxarticle statt oxorderarticles Objekte in das oxbasket-Objekt
-     * Bassiert auf oxorder._addOrderArticlesToBasket()
+     * Basiert auf oxorder._addOrderArticlesToBasket()
      *
      * @author  tronet GmbH
      * @since   7.0.4
@@ -158,7 +160,7 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 7.0.3
+     * @version 7.0.5
      */
     public function troContinueFinalizeOrder(oxBasket $oBasket, $oUser)
     {
@@ -166,6 +168,7 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
         $oUserPayment = $this->_setPayment($oBasket->getPaymentId());
         $blRecalculatingOrder = false;
         $this->_blContinueFinalizeOrder = true;
+        oxRegistry::getLang()->setBaseLanguage($this->getOrderLanguage());
 
         //////////////////////////////////
         // Rest of original finalizeOrder
@@ -187,7 +190,7 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
         // deleting remark info only when order is finished
         oxRegistry::getSession()->deleteVariable('ordrem');
         oxRegistry::getSession()->deleteVariable('stsprotection');
-        
+
         //#4005: Order creation time is not updated when order processing is complete
         if (!$blRecalculatingOrder) {
             $this->_updateOrderDate();
@@ -211,6 +214,13 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
             $this->_markVouchers($oBasket, $oUser);
         }
 
+        // Wenn die Routine ueber die Notification-URL aufgerufen wird,
+        // muessen sich die Funktionen verhalten, als ob man im Backend waere.
+        // Der E-Mail Versand muss allerdings im "Frontend" stattfinden,
+        // weil sonst die Sprachvariablen u.U. nicht richtig gefunden werden
+        $blAdmin = $this->isAdmin();
+        $this->setAdminMode(false);
+
         // send order by email to shop owner and current user
         // skipping this action in case of order recalculation
         if (!$blRecalculatingOrder) {
@@ -218,7 +228,9 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
         } else {
             $iRet = self::ORDER_STATE_OK;
         }
-        
+
+        $this->setAdminMode($blAdmin);
+
         // Reset: Lade nun oxorderarticles statt oxarticles in das oxbasket-Objekt
         $oBasket = $this->getTroOrderBasket(false);
 

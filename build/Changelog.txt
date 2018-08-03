@@ -99,3 +99,7 @@
 ==7.0.4==
 *FIXED: Bug, Module-Settings-Name was longer than 32 characters which Oxid < 4.9 cannot handle
 *FIXED: Bug, imgaes couldn't be rendered in emails
+
+==7.0.5==
+*FIXED: Bug, Translations might be missing in emails
+*FIXED: Bug, ordered Articles might be mentioned double in backend
