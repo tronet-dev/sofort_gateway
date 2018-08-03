@@ -23,7 +23,7 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
  * @author        tronet GmbH
  *
  * @since         8.0.0
- * @version       8.0.2
+ * @version       8.0.3
  */
 class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 {
@@ -59,11 +59,13 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      *
      * @author  tronet GmbH
      * @since   8.0.0
-     * @version 8.0.2
+     * @version 8.0.3
      */
     public function getTroOrderBasket($blTroUseArticleInsteadOfOrderArticle = true)
     {
         $oBasket = $this->_getOrderBasket($blStockCheck);
+        $this->_oArticles = null;
+        
         if ($blTroUseArticleInsteadOfOrderArticle)
         {
             $this->_troAddArticlesFromOrderToBasket($oBasket, $this->getOrderArticles(true));
@@ -79,7 +81,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 
     /**
      * Lädt oxarticle statt oxorderarticles Objekte in das oxbasket-Objekt
-     * Bassiert auf oxorder._addOrderArticlesToBasket()
+     * Basiert auf oxorder._addOrderArticlesToBasket()
      *
      * @author  tronet GmbH
      * @since   8.0.2
@@ -175,7 +177,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.1
+     * @version 8.0.3
      */
     public function troContinueFinalizeOrder(Basket $oBasket, $oUser)
     {
@@ -183,6 +185,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
         try {
             // payment information
             $oUserPayment = $this->_setPayment($oBasket->getPaymentId());
+            Registry::getLang()->setBaseLanguage($this->getOrderLanguage());
 
             //////////////////////////////////
             // Rest of original finalizeOrder
@@ -218,9 +221,18 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
             // skipping this action in case of order recalculation
             $this->_markVouchers($oBasket, $oUser);
 
+            // Wenn die Routine ueber die Notification-URL aufgerufen wird,
+            // muessen sich die Funktionen verhalten, als ob man im Backend waere.
+            // Der E-Mail Versand muss allerdings im "Frontend" stattfinden,
+            // weil sonst die Sprachvariablen u.U. nicht richtig gefunden werden
+            $blAdmin = $this->isAdmin();
+            $this->setAdminMode(false);
+
             // send order by email to shop owner and current user
             // skipping this action in case of order recalculation
             $iRet = $this->_sendOrderByEmail($oUser, $oBasket, $oUserPayment);
+
+            $this->setAdminMode($blAdmin);
 
             \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->commitTransaction();
         } catch (Exception $exception) {

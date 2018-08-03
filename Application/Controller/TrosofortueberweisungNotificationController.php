@@ -24,7 +24,7 @@
      * @author        tronet GmbH
      *
      * @since         7.0.0
-     * @version       8.0.1
+     * @version       8.0.3
      */
     class TrosofortueberweisungNotificationController extends FrontendController
     {
@@ -210,7 +210,7 @@
          *
          * @author  tronet GmbH
          * @since   8.0.1
-         * @version 8.0.1
+         * @version 8.0.3
          */
         protected function _troFinalizeOrderIfStatusNotFinished($oTransactionData)
         {
@@ -223,6 +223,8 @@
              && $oOrder->oxorder__oxtransstatus->value == 'NOT_FINISHED'
              && $oOrder->oxorder__oxtransid->value == $sTransactionId)
             {
+                $this->setAdminMode(true);
+
                 $oUser = $oOrder->getOrderUser();
                 $oBasket = $oOrder->getTroOrderBasket();
 

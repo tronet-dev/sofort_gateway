@@ -7,7 +7,6 @@
      * @author        tronet GmbH
      *
      * @since         8.0.0
-     * @version       8.0.2
      */
     $sMetadataVersion = '2.0';
 
@@ -26,7 +25,7 @@
             'en' => 'Sofort. by tronet',
         ],
         'thumbnail'   => "out/img/logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
-        'version'     => '8.0.2',
+        'version'     => '8.0.3',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
