@@ -25,7 +25,7 @@
             'en' => 'Sofort. by tronet',
         ],
         'thumbnail'   => "out/img/logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
-        'version'     => '8.0.3',
+        'version'     => '8.0.6',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
@@ -80,9 +80,8 @@
         'extend'      => [
             // Model
             \OxidEsales\Eshop\Application\Model\PaymentGateway::class                  => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungPaymentGateway::class,
+            \OxidEsales\Eshop\Application\Model\Basket::class                          => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungBasket::class,
             \OxidEsales\Eshop\Application\Model\Order::class                           => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungOrder::class,
-            \OxidEsales\Eshop\Application\Model\OrderArticle::class                    => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungOrderArticle::class,
-            \OxidEsales\Eshop\Application\Model\BasketItem::class                      => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungBasketItem::class,
 
             // Controller - FE
             \OxidEsales\Eshop\Application\Controller\OrderController::class            => \Tronet\Trosofortueberweisung\Application\Controller\TrosofortueberweisungOrderController::class,

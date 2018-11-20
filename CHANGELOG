@@ -104,6 +104,10 @@
 *FIXED: Bug, Translations might be missing in emails
 *FIXED: Bug, ordered Articles might be mentioned double in backend
 
+==7.0.6==
+*FIXED: Bug, Session-settings might get lost if order gets finalized even if the shopuser quits after paying at Sofort.
+*FIXED: Bug, Shop-ID appended to success-, notification- and abort-url
+
 ==8.0.0==
 * CHANGED: Directory structure
 * CHANGED: SOFORT Lib is now included using Composer
@@ -131,3 +135,7 @@
 ==8.0.3==
 *FIXED: Bug, Translations might be missing in emails
 *FIXED: Bug, ordered Articles might be mentioned double in backend
+
+==8.0.6==
+*FIXED: Bug, Session-settings might get lost if order gets finalized even if the shopuser quits after paying at Sofort.
+*FIXED: Bug, Shop-ID appended to success-, notification- and abort-url

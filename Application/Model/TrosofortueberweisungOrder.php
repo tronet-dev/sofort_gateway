@@ -23,7 +23,7 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
  * @author        tronet GmbH
  *
  * @since         8.0.0
- * @version       8.0.3
+ * @version       8.0.6
  */
 class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 {
@@ -59,45 +59,17 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      *
      * @author  tronet GmbH
      * @since   8.0.0
-     * @version 8.0.3
+     * @version 8.0.6
      */
-    public function getTroOrderBasket($blTroUseArticleInsteadOfOrderArticle = true)
+    public function getTroOrderBasket()
     {
-        $oBasket = $this->_getOrderBasket($blStockCheck);
+        $oBasket = $this->_getOrderBasket();
         $this->_oArticles = null;
         
-        if ($blTroUseArticleInsteadOfOrderArticle)
-        {
-            $this->_troAddArticlesFromOrderToBasket($oBasket, $this->getOrderArticles(true));
-        }
-        else
-        {
-            $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
-        }
+        $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
         $oBasket->calculateBasket(true);
 
         return $oBasket;
-    }
-
-    /**
-     * Lädt oxarticle statt oxorderarticles Objekte in das oxbasket-Objekt
-     * Basiert auf oxorder._addOrderArticlesToBasket()
-     *
-     * @author  tronet GmbH
-     * @since   8.0.2
-     * @version 8.0.2
-     */
-    protected function _troAddArticlesFromOrderToBasket($oBasket, $aOrderArticles)
-    {
-        // if no order articles, return empty basket
-        if (count($aOrderArticles) > 0) {
-
-            //adding order articles to basket
-            foreach ($aOrderArticles as $oOrderArticle) {
-                $oOrderArticle->setTroUseArticleInsteadOfOrderArticle();
-                $oBasket->addOrderArticleToBasket($oOrderArticle);
-            }
-        }
     }
 
     /**
@@ -157,11 +129,19 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.1
+     * @version 8.0.6
      */
     public function finalizeOrder(Basket $oBasket, $oUser, $blRecalculatingOrder = false)
     {
         $this->_troHandleExistingSOFORTOrder();
+
+        // Bei Sofort-Überweisungsbestellungen Basket aus der Session in die Datenbank schreiben
+        $sPaymentId = $oBasket->getPaymentId();
+        if ($sPaymentId == 'trosofortgateway_su' && !$this->_blContinueFinalizeOrder)
+        {
+            $this->oxorder__trousersession = new Field(serialize($_SESSION));
+        }
+
         return parent::finalizeOrder($oBasket, $oUser, $blRecalculatingOrder);
     }
 
@@ -177,7 +157,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.3
+     * @version 8.0.6
      */
     public function troContinueFinalizeOrder(Basket $oBasket, $oUser)
     {
@@ -241,8 +221,15 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
             throw $exception;
         }
 
+        // End Rest of original finalizeOrder
+        //////////////////////////////////
+
+        $this->oxorder__trousersession = null;
+        $this->save();
+
         // Reset: Lade nun oxorderarticles statt oxarticles in das oxbasket-Objekt
-        $oBasket = $this->getTroOrderBasket(false);
+        // Dies wird von finalizeOrder erwartet, wenn $blRecalculatingOrder = true
+        $oBasket = $this->getTroOrderBasket();
 
         // Call the original finalizeOrder method. In case the method is extended by other modules,
         // this makes sure those features are executed as well.
@@ -382,6 +369,17 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
             // Bei Bestellabbruch muss dies rückgängig gemacht werden.
             $this->_troMarkVouchersAsUnused();
         }
+    }
+
+    /**
+    * @author  tronet GmbH
+    * @since   8.0.6
+    * @version 8.0.6
+    */
+    public function cancelOrder()
+    {
+        $this->oxorder__trousersession = null;
+        return parent::cancelOrder();
     }
 
     /**
