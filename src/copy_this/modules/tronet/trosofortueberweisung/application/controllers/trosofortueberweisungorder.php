@@ -5,7 +5,7 @@
      * @author        tronet GmbH
      *
      * @since         7.0.0
-     * @version       7.0.3
+     * @version       7.0.6
      */
     class trosofortueberweisungorder extends trosofortueberweisungorder_parent
     {
@@ -16,7 +16,7 @@
          * 
          * @author  tronet GmbH
          * @since   7.0.0
-         * @version 7.0.3
+         * @version 7.0.6
          */
         public function troContinueExecute()
         {
@@ -39,7 +39,7 @@
             if ($this->_troContinueExecuteSofortueberweisungOrder($oOrder))
             {
                 // Finish oxOrder::finalizeOrder
-                $oBasket = $oOrder->getTroOrderBasket();
+                $oBasket = $this->getSession()->getBasket();
                 $iSuccess = $oOrder->troContinueFinalizeOrder($oBasket, $oUser);
 
                 ////////////////////////////////////////////////////////////

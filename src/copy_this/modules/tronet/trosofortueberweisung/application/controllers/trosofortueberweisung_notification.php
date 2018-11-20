@@ -11,7 +11,7 @@
      * @author        tronet GmbH
      *
      * @since         7.0.0
-     * @version       7.0.5
+     * @version       7.0.6
      */
     class trosofortueberweisung_notification extends oxUBase
     {
@@ -199,7 +199,7 @@
          *
          * @author  tronet GmbH
          * @since   7.0.3
-         * @version 7.0.5
+         * @version 7.0.6
          */
         protected function _troFinalizeOrderIfStatusNotFinished($oTransactionData)
         {
@@ -210,12 +210,19 @@
 
             if ($oOrder->oxorder__oxpaymenttype->value == 'trosofortgateway_su'
              && $oOrder->oxorder__oxtransstatus->value == 'NOT_FINISHED'
-             && $oOrder->oxorder__oxtransid->value == $sTransactionId)
+             && $oOrder->oxorder__oxtransid->value == $sTransactionId
+             && $oOrder->oxorder__trousersession->rawValue)
             {
                 $this->setAdminMode(true);
 
+                oxRegistry::getSession()->setBasket(null);
+                $aSession = unserialize($oOrder->oxorder__trousersession->rawValue);
+                foreach($aSession as $sVarname => $oVarvalue)
+                {
+                    oxRegistry::getSession()->setVariable($sVarname, $oVarvalue);
+                }
+                $oBasket = oxRegistry::getSession()->getBasket();
                 $oUser = $oOrder->getOrderUser();
-                $oBasket = $oOrder->getTroOrderBasket();
 
                 // Finish oxOrder::finalizeOrder
                 $iSuccess = $oOrder->troContinueFinalizeOrder($oBasket, $oUser);

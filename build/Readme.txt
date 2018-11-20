@@ -8,7 +8,7 @@ tronet GmbH
 tro
 
 ==Version==
-7.0.5
+7.0.6
 
 ==Link==
 http://www.tronet.media
@@ -20,17 +20,19 @@ vertrieb@tro.net
 Module for integration of Sofortueberweisung-payment in Oxid.
 
 ==Extend==
-*oxbasketitem
---_setFromOrderArticle
+*oxbasket
+--__wakeUp
 *oxorder
 --finalizeOrder
 --_executePayment
 --_updateOrderDate
 --_checkOrderExist
+--cancelOrder
 *oxpaymentgateway
 --executePayment
 *payment
 --validatePayment
+*order
 
 ==Requirements==
 1. Oxid eshop in Version from 4.7.x /5.0.x
@@ -44,9 +46,8 @@ Module for integration of Sofortueberweisung-payment in Oxid.
 
 ==Modules==
 oxpaymentgateway => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxpaymentgateway
+oxbasket => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasket
 oxorder => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxorder
-oxorderarticles => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxorderarticles
-oxbasketitems => tronet/trosofortueberweisung/application/models/trosofortueberweisungoxbasketitems
 order => tronet/trosofortueberweisung/application/controllers/trosofortueberweisungorder
 payment => tronet/trosofortueberweisung/application/controllers/trosofortueberweisungpayment
 navigation => tronet/trosofortueberweisung/application/controllers/admin/trosofortueberweisung_navigation

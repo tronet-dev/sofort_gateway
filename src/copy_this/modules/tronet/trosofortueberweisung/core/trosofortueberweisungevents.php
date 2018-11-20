@@ -23,7 +23,15 @@
         {
             trosofortueberweisungevents::handleTroGatewayLog();
             trosofortueberweisungevents::handleOxPayments();
+            trosofortueberweisungevents::handleOxorder();
             trosofortueberweisungevents::setPaymentMethodActiveStatus('trosofortgateway_su', 1);
+            
+            // Views aktualisieren
+            $oMetaData = oxNew('oxDbMetaDataHandler');
+            $oMetaData->updateViews();            
+
+            // tmp-Ordner leeren
+            trosofortueberweisungevents::troClearTmp();
         }
 
         /**
@@ -46,6 +54,20 @@
         {
             $sSqlFileContent = trosofortueberweisungevents::getSqlFileContent('oxpayments.sql');
             oxDb::getDb()->execute($sSqlFileContent);
+        }
+
+        /**
+         * Creates new columns in oxorder.
+         *
+         * @author tronet GmbH
+         */
+        public static function handleOxorder()
+        {
+            $sSqlFileContent = trosofortueberweisungevents::getSqlFileContent('oxorder.sql');
+            try {
+                oxDb::getDb()->execute($sSqlFileContent);
+            } catch (Exception $oE) {
+            }
         }
 
         /**
@@ -94,4 +116,18 @@
                 $oPayment->save();
             }
         }
+        
+        /**
+         * Clear tmp
+         *
+         * @author tronet GmbH
+         * @since  7.0.6
+         */
+        public static function troClearTmp()
+        {
+            foreach (glob(getShopBasePath() . "tmp/*_oxorder_*") as $filename) 
+            {
+                @unlink($filename);
+            }
+        }        
     }

@@ -9,7 +9,7 @@
      * @author        tronet GmbH
      *
      * @since         7.0.0
-     * @version       7.0.3
+     * @version       7.0.6
      *
      * @property string $sRedirUrl
      */
@@ -51,7 +51,7 @@
          *
          * @author  tronet GmbH
          * @since    7.0.3
-         * @version  7.0.3
+         * @version  7.0.6
          */
         protected function _troExecutePayment(&$oOrder)
         {
@@ -111,10 +111,10 @@
 
             ########################################
             // Set urls
-            $oSofortueberweisung->setSuccessUrl($oConfig->getSslShopUrl().'?cl=order&fnc=troContinueExecute&transactionid=-TRANSACTION-&orderid='.$oOrder->oxorder__oxid->value.'&force_sid='.$force_sid);
-            $oSofortueberweisung->setAbortUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=troDeleteOldOrder&force_sid='.$force_sid);
-            $oSofortueberweisung->setTimeoutUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=troDeleteOldOrder&force_sid='.$force_sid);
-            $oSofortueberweisung->setNotificationUrl($oConfig->getSslShopUrl().'?cl=trosofortueberweisung_notification');
+            $oSofortueberweisung->setSuccessUrl($oConfig->getSslShopUrl().'?cl=order&fnc=troContinueExecute&transactionid=-TRANSACTION-&orderid='.$oOrder->oxorder__oxid->value.'&force_sid='.$force_sid.'&shp='.$oConfig->getShopId());
+            $oSofortueberweisung->setAbortUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=troDeleteOldOrder&force_sid='.$force_sid.'&shp='.$oConfig->getShopId());
+            $oSofortueberweisung->setTimeoutUrl($oConfig->getSslShopUrl().'?cl=payment&fnc=troDeleteOldOrder&force_sid='.$force_sid.'&shp='.$oConfig->getShopId());
+            $oSofortueberweisung->setNotificationUrl($oConfig->getSslShopUrl().'?cl=trosofortueberweisung_notification&shp='.$oConfig->getShopId());
 
             // Determine OXID eShop and trosofortueberweisung-Module-Version
             $aModuleVersions = $oConfig->getConfigParam('aModuleVersions');
