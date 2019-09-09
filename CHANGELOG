@@ -139,3 +139,6 @@
 ==8.0.6==
 *FIXED: Bug, Session-settings might get lost if order gets finalized even if the shopuser quits after paying at Sofort.
 *FIXED: Bug, Shop-ID appended to success-, notification- and abort-url
+
+==8.0.7==
+*FIXED: Bug, Startpage instead of Thankyou-Page is called after returning from Sofort

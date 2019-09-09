@@ -23,7 +23,7 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
  * @author        tronet GmbH
  *
  * @since         8.0.0
- * @version       8.0.6
+ * @version       8.0.7
  */
 class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 {
@@ -157,7 +157,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.6
+     * @version 8.0.7
      */
     public function troContinueFinalizeOrder(Basket $oBasket, $oUser)
     {
@@ -165,6 +165,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
         try {
             // payment information
             $oUserPayment = $this->_setPayment($oBasket->getPaymentId());
+            $this->_blContinueFinalizeOrder = true;
             Registry::getLang()->setBaseLanguage($this->getOrderLanguage());
 
             //////////////////////////////////
