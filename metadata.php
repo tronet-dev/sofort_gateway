@@ -25,7 +25,7 @@
             'en' => 'Sofort. by tronet',
         ],
         'thumbnail'   => "out/img/logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
-        'version'     => '8.0.6',
+        'version'     => '8.0.7',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
