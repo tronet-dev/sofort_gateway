@@ -20,7 +20,7 @@
             'en' => 'Sofort. by tronet',
         ),
         'thumbnail'   => 'logo_sofort.png',
-        'version'     => '7.0.6',
+        'version'     => '7.0.8',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'http://www.tro.net',
