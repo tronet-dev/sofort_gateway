@@ -20,7 +20,7 @@ use Sofort\SofortLib\TransactionData;
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       8.0.6
+ * @version       8.0.8
  */
 class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderController_parent
 {
@@ -31,7 +31,7 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.6
+     * @version 8.0.8
      */
     public function troContinueExecute()
     {
@@ -53,6 +53,12 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
 
         if ($this->_troContinueExecuteSofortueberweisungOrder($oOrder))
         {
+            // setze Status auf IN_PROGRESS, damit Notification-Controller nicht während der Abarbeitung dieser Methode die gleiche Bestellung finalisiert
+            // Speichern erfolgt nicht mit $oOrder->save, da die Methode noch Nebeneffekte aufweisen kann
+            $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+            $sUpdate = "UPDATE oxorder SET oxtransstatus = 'IN_PROGRESS' WHERE oxid = '$sOrderId'";
+            $oDb->execute($sUpdate); 
+            
             // Finish oxOrder::finalizeOrder
             $oBasket = $oOrder->getSession()->getBasket();
             $iSuccess = $oOrder->troContinueFinalizeOrder($oBasket, $oUser);

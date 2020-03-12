@@ -108,6 +108,10 @@
 *FIXED: Bug, Session-settings might get lost if order gets finalized even if the shopuser quits after paying at Sofort.
 *FIXED: Bug, Shop-ID appended to success-, notification- and abort-url
 
+==7.0.8==
+*FIXED: Bug, currency was ignored when order gets finalized by the notification controller if the shopuser quits after paying at Sofort.
+*CHANGED: Before finalizing the status changes to IN_PROGRESS to avoid finalization from several processes simultaneously 
+
 ==8.0.0==
 * CHANGED: Directory structure
 * CHANGED: SOFORT Lib is now included using Composer
@@ -142,3 +146,7 @@
 
 ==8.0.7==
 *FIXED: Bug, Startpage instead of Thankyou-Page is called after returning from Sofort
+
+==8.0.8==
+*FIXED: Bug, currency was ignored when order gets finalized by the notification controller if the shopuser quits after paying at Sofort.
+*CHANGED: Before finalizing the status changes to IN_PROGRESS to avoid finalization from several processes simultaneously 

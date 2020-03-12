@@ -24,7 +24,7 @@ use Tronet\Trosofortueberweisung\Core\SofortConfiguration;
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       8.0.6
+ * @version       8.0.8
  */
 class TrosofortueberweisungNotificationController extends FrontendController
 {
@@ -39,7 +39,7 @@ class TrosofortueberweisungNotificationController extends FrontendController
      */
     public function render()
     {
-        parent::render();
+        parent::render();  
 
         // Heart of this controller
         $this->_troUpdateOrderByStatus();
@@ -59,10 +59,10 @@ class TrosofortueberweisungNotificationController extends FrontendController
      * @version 8.0.1
      */
     protected function _troUpdateOrderByStatus()
-    {
-        $sTransactionId = $this->_getTroTransactionID();
+    {           
+        $sTransactionId = $this->_getTroTransactionID();  
         $oTransactionData = $this->_getTroTransactionData($sTransactionId);
-        $this->_troStoreGatewayLog($oTransactionData);
+        $this->_troStoreGatewayLog($oTransactionData); 
 
         switch ($oTransactionData->getStatus())
         {
@@ -210,7 +210,7 @@ class TrosofortueberweisungNotificationController extends FrontendController
      *
      * @author  tronet GmbH
      * @since   8.0.1
-     * @version 8.0.6
+     * @version 8.0.8
      */
     protected function _troFinalizeOrderIfStatusNotFinished($oTransactionData)
     {
@@ -224,6 +224,12 @@ class TrosofortueberweisungNotificationController extends FrontendController
          && $oOrder->oxorder__oxtransid->value == $sTransactionId
          && $oOrder->oxorder__trousersession->rawValue)
         {
+            // setze Status auf IN_PROGRESS, damit Order-Controller nicht während der Abarbeitung dieser Methode die gleiche Bestellung finalisiert
+            // Speichern erfolgt nicht mit $oOrder->save, da die Methode noch Nebeneffekte aufweisen kann
+            $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+            $sUpdate = "UPDATE oxorder SET oxtransstatus = 'IN_PROGRESS' WHERE oxid = '$sOrderId'";
+            $oDb->execute($sUpdate);
+             
             $this->setAdminMode(true);
 
             Registry::getSession()->setBasket(null);
@@ -232,6 +238,7 @@ class TrosofortueberweisungNotificationController extends FrontendController
             {
                 Registry::getSession()->setVariable($sVarname, $oVarvalue);
             }
+            $this->setActCurrency($aSession['currency']);
             $oBasket = Registry::getSession()->getBasket();
             $oUser = $oOrder->getOrderUser();
 
