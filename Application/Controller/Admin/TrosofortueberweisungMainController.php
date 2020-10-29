@@ -149,20 +149,18 @@
          *
          * @author  tronet GmbH
          * @since   7.0.0
-         * @version 8.0.0
+         * @version 8.0.9
          */
         protected function _troCheckForModuleUpdates()
         {
             try
             {
-                $oTrosofortueberweisungReleaseList = oxNew(TrosofortueberweisungReleaseList::class);
-                $oTrosofortueberweisungReleaseList->troSelectXmlUri($this->getTroSOFORTConfig()->getTroReleaseListUrl());
-
-                $sModuleVersion = $this->getTroCurrentModuleVersion();
-                $sOxidEdition = $this->getConfig()->getEdition();
-                $sOxidVersion = $this->getConfig()->getVersion();
-
-                $oTrosofortueberweisungRelease = $oTrosofortueberweisungReleaseList->getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, PHP_VERSION);
+                $oTrosofortueberweisungRelease = $this->_getTroLatestRelease(
+                    $this->getTroCurrentModuleVersion(),
+                    $this->getConfig()->getEdition(),
+                    $this->getConfig()->getVersion(),
+                    PHP_VERSION
+                );
 
                 if ($oTrosofortueberweisungRelease instanceof TrosofortueberweisungRelease)
                 {
@@ -181,6 +179,45 @@
             $this->addTplParam('aMessage', $aViewData);
         }
 
+        /**
+         * @param string $sModuleVersion
+         * @param string $sOxidEdition
+         * @param string $sOxidVersion
+         * @param string $sPhpVersion
+         * 
+         * @return TrosofortueberweisungRelease
+         *
+         * @throws \InvalidArgumentException
+         * 
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, $sPhpVersion)
+        {
+            $oTrosofortueberweisungReleaseList = $this->_getTroReleaseListFromUrl($this->getTroSOFORTConfig()->getTroReleaseListUrl());
+
+            return $oTrosofortueberweisungReleaseList->getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, $sPhpVersion);
+        }
+
+        /**
+         * @param string $sUrl
+         * 
+         * @return TrosofortueberweisungReleaseList
+         *
+         * @throws \InvalidArgumentException
+         * 
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getTroReleaseListFromUrl($sUrl)
+        {
+            $oTrosofortueberweisungReleaseList = oxNew(TrosofortueberweisungReleaseList::class);
+            $oTrosofortueberweisungReleaseList->troSelectXmlUri($sUrl);
+
+            return $oTrosofortueberweisungReleaseList;
+        }
 
         /**
          * Action function that checks for module changes.
@@ -191,22 +228,29 @@
          */
         public function troCheckForChanges()
         {
+            $aChangedFiles = ['changedCoreFiles' => 0];
+            $blTroCheckedChangesFailed = true;
             $sTroCheckedChangesFailedMessage = '';
-            $oSofortConfiguration = oxNew(SofortConfiguration::class);
-            $sDownloadLinkRaw = $oSofortConfiguration->getTroMetaHashLinkRaw();
+
+            $sDownloadLinkRaw = $this->getTroSOFORTConfig()->getTroMetaHashLinkRaw();
             $sDownloadLinkFinal = sprintf($sDownloadLinkRaw, $this->getTroCurrentModuleVersion());
 
-            if ($this->_troUrlExists($sDownloadLinkFinal))
+            if (!$this->_troUrlExists($sDownloadLinkFinal))
             {
-                $oSOFORTcURL = oxNew(CurlUtility::class, $sDownloadLinkFinal);
-                $oSOFORTcURL->troCurlSetOpt(CURLOPT_RETURNTRANSFER, 1);
+                $sTroCheckedChangesFailedMessage = Registry::getLang()->translateString('TRO_SOFORT_CURLE_COULDNT_CONNECT');
+            }
+            else
+            {
+                $oSOFORTcURL = $this->_getTroSOFORTcURL($sDownloadLinkFinal, [
+                    CURLOPT_RETURNTRANSFER => 1,
+                ]);
                 $oReleaseListXml = $oSOFORTcURL->troCurlExec();
                 $oSOFORTcURL->troCloseCh();
                 
                 if ($oReleaseListXml)
                 {
-                    $oSimpleXMLElement = new \SimpleXMLElement($oReleaseListXml);
-                    $sModulePath = getShopBasePath() . 'modules/';
+                    $oSimpleXMLElement = $this->_getTroSimpleXmlElementFromString($oReleaseListXml);
+                    $sModulePath = $this->getConfig()->getModulesDir();
                     $aChangedFiles = $this->getTroSOFORTDirectoryUtility()->getTroChangedFilesFromDirectory($sModulePath, $oSimpleXMLElement);
                     $blTroCheckedChangesFailed = false;
                 }
@@ -216,24 +260,52 @@
                     {
                         $aErrorCodes = $oSOFORTcURL->getTroErrorCodes();
                         $sErrorCodeName = $aErrorCodes[$oSOFORTcURL->getTroErrorNumber()];
-                        $sLanguageKey = 'TRO_SOFORT_' . $sErrorCodeName;
-                        $sTroCheckedChangesFailedMessage = \OxidEsales\Eshop\Core\Registry::getLang()->translateString($sLanguageKey);
+                        $sTroCheckedChangesFailedMessage = Registry::getLang()->translateString("TRO_SOFORT_{$sErrorCodeName}");
                     }
-                    $aChangedFiles = ['changedCoreFiles' => 0];
-                    $blTroCheckedChangesFailed = true;
                 }
-            }
-            else
-            {
-                $sTroCheckedChangesFailedMessage = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('TRO_SOFORT_CURLE_COULDNT_CONNECT');
-                $aChangedFiles = ['changedCoreFiles' => 0];
-                $blTroCheckedChangesFailed = true;
             }
 
             $this->addTplParam('aTroChangedFiles', $aChangedFiles);
             $this->addTplParam('blTroCheckedChanges', true);
             $this->addTplParam('blTroCheckedChangesFailed', $blTroCheckedChangesFailed);
             $this->addTplParam('sTroCheckedChangesFailedMessage', $sTroCheckedChangesFailedMessage);
+        }
+
+        /**
+         * Creates a cURL with the given URL and with the given cURL-options.
+         *
+         * @param string $sUrl
+         * @param array $aOptions
+         *
+         * @return CurlUtility
+         * 
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getTroSOFORTcURL($sUrl, $aOptions = null)
+        {
+            $oSOFORTcURL = oxNew(CurlUtility::class, $sUrl);
+            
+            if($aOptions) {
+                $oSOFORTcURL->troCurlSetOptArray($aOptions);
+            }
+
+            return $oSOFORTcURL;
+        }
+
+        /**
+         * @param string $sXml
+         *
+         * @return \SimpleXMLElement
+         * 
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getTroSimpleXmlElementFromString($sXml)
+        {
+            return new \SimpleXMLElement($sXml);
         }
 
         /**
@@ -281,15 +353,13 @@
         /**
          * Renders notification message for passed release.
          *
-         * @param \Exception $exception
-         *
          * @return mixed|string
          * 
          * @author  tronet GmbH
          * @since   7.0.0
-         * @version 8.0.0
+         * @version 8.0.9
          */
-        protected function _troRenderUpdateNotificationFailedMessage($exception = null)
+        protected function _troRenderUpdateNotificationFailedMessage()
         {
             $oSmarty = Registry::get(UtilsView::class)->getSmarty();
             $oSmarty->assign('oView', $this);
@@ -307,15 +377,21 @@
          * 
          * @author  tronet GmbH
          * @since   7.0.0
-         * @version 8.0.0
+         * @version 8.0.9
          */
         protected function _troUrlExists($sUrl)
         {
-            $blUrlExists = true;
-            $aFileHeaders = @get_headers($sUrl);
-            if ($aFileHeaders[0] === 'HTTP/1.1 404 Not Found')
-            {
-                $blUrlExists = false;
+            $blUrlExists = false;
+            $oHandle = curl_init($sUrl);
+            
+            curl_setopt($oHandle, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($oHandle);
+
+            if(!curl_errno($oHandle)) {
+                $iStatus = curl_getinfo($oHandle, CURLINFO_HTTP_CODE);
+
+                $blUrlExists = $iStatus < 400;
             }
 
             return $blUrlExists;

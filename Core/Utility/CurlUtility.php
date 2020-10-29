@@ -306,6 +306,21 @@
         }
 
         /**
+         * For a detailed description of the params see method `curl_setopt_array`.
+         *
+         * @param int   $option
+         * @param mixed $value
+         *
+         * @version 8.0.9
+         * @since   8.0.9
+         * @author  tronet GmbH
+         */
+        public function troCurlSetOptArray($optArray)
+        {
+            curl_setopt_array($this->getTroCh(), $optArray);
+        }
+
+        /**
          * @version 8.0.0
          * @since   7.0.2
          * @author  tronet GmbH

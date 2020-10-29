@@ -73,15 +73,13 @@
             {
                 try
                 {
-                    $oTrosofortueberweisungReleaseList = oxNew(TrosofortueberweisungReleaseList::class);
-                    $oTrosofortueberweisungReleaseList->troSelectXmlUri($this->getTroSOFORTConfig()->getTroReleaseListUrl());
-
-                    $sModuleVersion = $this->getTroCurrentModuleVersion();
-                    $sOxidEdition = $this->getConfig()->getEdition();
-                    $sOxidVersion = $this->getConfig()->getVersion();
-
-                    $oTrosofortueberweisungRelease = $oTrosofortueberweisungReleaseList->getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, PHP_VERSION);
-
+                    $oTrosofortueberweisungRelease = $this->_getTroLatestRelease(
+                        $this->getTroCurrentModuleVersion(),
+                        $this->getConfig()->getEdition(),
+                        $this->getConfig()->getVersion(),
+                        PHP_VERSION
+                    );
+                    
                     if ($oTrosofortueberweisungRelease instanceof TrosofortueberweisungRelease)
                     {
                         $aViewData['trosofortueberweisung_update_notification'] = $this->_troRenderUpdateNotificationMessage($oTrosofortueberweisungRelease);
@@ -94,6 +92,46 @@
             
                 $this->addTplParam('aMessage', $aViewData);
             }
+        }
+
+        /**
+         * @param string $sModuleVersion
+         * @param string $sOxidEdition
+         * @param string $sOxidVersion
+         * @param string $sPhpVersion
+         * 
+         * @return TrosofortueberweisungRelease
+         *
+         * @throws \InvalidArgumentException
+         * 
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, $sPhpVersion)
+        {
+            $oTrosofortueberweisungReleaseList = $this->_getTroReleaseListFromUrl($this->getTroSOFORTConfig()->getTroReleaseListUrl());
+
+            return $oTrosofortueberweisungReleaseList->getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, $sPhpVersion);
+        }
+
+        /**
+         * @param string $sUrl
+         * 
+         * @return TrosofortueberweisungReleaseList
+         *
+         * @throws \InvalidArgumentException
+         * 
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getTroReleaseListFromUrl($sUrl)
+        {
+            $oTrosofortueberweisungReleaseList = oxNew(TrosofortueberweisungReleaseList::class);
+            $oTrosofortueberweisungReleaseList->troSelectXmlUri($sUrl);
+
+            return $oTrosofortueberweisungReleaseList;
         }
 
         /**

@@ -19,7 +19,7 @@ class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
      *
      * @author  tronet GmbH
      * @since   8.0.6
-     * @version 8.0.6
+     * @version 8.0.9
      */
     public function __wakeUp()
     {
@@ -27,7 +27,7 @@ class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
 
         foreach ($this->_aBasketContents as $sItemKey => $oBasketItem)
         {
-            $oBasketItem->getArticle();
+            $oBasketItem->getArticle(false);
         }
 
         return $ret;

@@ -12,83 +12,10 @@
      * @author        tronet GmbH
      *
      * @since         7.0.0
-     * @version       8.0.0
+     * @version       8.0.9
      */
     class DirectoryUtility
     {
-        /**
-         * @var LoggingUtility $_oLoggingUtility
-         * 
-         * @author  tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        protected $_oLoggingUtility = null;
-
-        /**
-         * Creates a zip archive of given directory with given name.
-         *
-         * @param string $sAbsolutePathToZipArchive
-         * @param string $sAbsolutePathToDirectoryToArchive
-         *
-         * @return \ZipArchive|null $oZipArchive
-         * 
-         * @author  tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function troCreateZipArchive($sAbsolutePathToZipArchive, $sAbsolutePathToDirectoryToArchive)
-        {
-            $oZipArchive = null;
-            if (is_dir($sAbsolutePathToDirectoryToArchive))
-            {
-                $oZipArchive = new \ZipArchive();
-                $oZipArchive->open($sAbsolutePathToZipArchive, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
-
-                $aSplFileInfo = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(realpath($sAbsolutePathToDirectoryToArchive)), \RecursiveIteratorIterator::LEAVES_ONLY);
-
-                if (is_array($aSplFileInfo))
-                {
-                    foreach ($aSplFileInfo as $oFile)
-                    {
-                        if (!$oFile->isdir())
-                        {
-                            $sFilePath = $oFile->getRealPath();
-                            $sRelativePath = substr($sFilePath, strlen(realpath($sAbsolutePathToDirectoryToArchive)) + 1);
-                            $oZipArchive->addFile($sFilePath, $sRelativePath);
-                        }
-                    }
-                }
-
-                $oZipArchive->close();
-            }
-            else
-            {
-                $oLoggingUtility = $this->getTroLoggingUtility();
-                $sLogMessage = 'Could not create zip archive because "' . $sAbsolutePathToDirectoryToArchive . '" is not a directory.';
-                $oLoggingUtility->troWriteToLog('INFO', $sLogMessage);
-            }
-
-            return $oZipArchive;
-        }
-
-        /**
-         * @return LoggingUtility
-         * 
-         * @author  tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function getTroLoggingUtility()
-        {
-            if ($this->_oLoggingUtility === null)
-            {
-                $this->_oLoggingUtility = oxNew(LoggingUtility::class);
-            }
-
-            return $this->_oLoggingUtility;
-        }
-
         /**
          * Perform a check on a directory for changed files.
          *
@@ -144,17 +71,5 @@
             $aChangedFiles['changedCoreFiles'] = count($aChangedFiles) - 1;
 
             return $aChangedFiles;
-        }
-
-        /**
-         * @param LoggingUtility $oLoggingUtility
-         *
-         * @author  tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function setTroLoggingUtility($oLoggingUtility)
-        {
-            $this->_oLoggingUtility = $oLoggingUtility;
         }
     }

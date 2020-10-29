@@ -95,11 +95,27 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.1
+     * @version 8.0.9
      */
     protected function _troContinueExecuteSofortueberweisungOrder($oOrder)
     {
-        $oConfig = Registry::getConfig();
+        // Request the current transaction-status.
+        $oTransactionData = $this->_getTroTransactionData();
+        $sTransactionDataStatus = $oTransactionData->getStatus();
+
+        return $this->_troSOFORTOrderHasBeenPayed($sTransactionDataStatus) && $this->_troSOFORTOrderIsNotFinishedYet($oOrder);
+    }
+
+    /**
+     * @return TransactionData
+     * 
+     * @author  tronet GmbH
+     * @since   8.0.9
+     * @version 8.0.9
+     */
+    protected function _getTroTransactionData()
+    {
+        $oConfig = $this->getConfig();
 
         // initialize
         $sTransactionId = $oConfig->getRequestParameter('transactionid');
@@ -110,16 +126,8 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
         $oTransactionData->setApiVersion(SofortConfiguration::getTroApiVersion());
         $oTransactionData->addTransaction($sTransactionId);
         $oTransactionData->sendRequest();
-        $sTransactionDataStatus = $oTransactionData->getStatus();
 
-        if ($this->_troSOFORTOrderHasBeenPayed($sTransactionDataStatus) && $this->_troSOFORTOrderIsNotFinishedYet($oOrder))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return $oTransactionData;
     }
 
     /**
@@ -134,14 +142,13 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.1
+     * @version 8.0.9
      */
     protected function _troSOFORTOrderHasBeenPayed($sPaymentStatus)
     {
         $aValidPaymentStatus = ['pending', 'received', 'untraceable'];
-        $blSOFORTOrderHasBeenPayed = in_array($sPaymentStatus, $aValidPaymentStatus);
-
-        return $blSOFORTOrderHasBeenPayed;
+        
+        return in_array($sPaymentStatus, $aValidPaymentStatus);
     }
 
     /**
@@ -158,8 +165,6 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
      */
     protected function _troSOFORTOrderIsNotFinishedYet($oOrder)
     {
-        $blSOFORTOrderIsNotFinishedYet = (bool)($oOrder->oxorder__oxtransstatus->value == 'NOT_FINISHED');
-
-        return $blSOFORTOrderIsNotFinishedYet;
+        return $oOrder->oxorder__oxtransstatus->value === 'NOT_FINISHED';
     }
 }

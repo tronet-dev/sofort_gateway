@@ -12,6 +12,7 @@ use OxidEsales\Eshop\Application\Model\Country;
 use Sofort\SofortLib\Sofortueberweisung;
 use Tronet\Trosofortueberweisung\Core\Exception\SofortException;
 use Tronet\Trosofortueberweisung\Core\SofortConfiguration;
+use Tronet\Trosofortueberweisung\Core\Utility\LocalizationUtility;
 
 /**
  * Payment gateway manager.
@@ -28,6 +29,15 @@ use Tronet\Trosofortueberweisung\Core\SofortConfiguration;
  */
 class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGateway_parent
 {
+    /**
+     * @var array $_aTransactionPlaceholder
+     * 
+     * @author  tronet GmbH
+     * @since   8.0.9
+     * @version 8.0.9
+     */
+    protected $_aTransactionPlaceholder = [];
+
     /**
      * Executes payment gateway functionality.
      *
@@ -72,38 +82,16 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
      *
      * @author  tronet GmbH
      * @since    7.0.0
-     * @version  8.0.6
+     * @version  8.0.9
      */
     protected function _troExecutePayment(&$oOrder)
     {
         // Initialize
         $oUser = $oOrder->getOrderUser();
         $oConfig = Registry::getConfig();
-        $oActiveShop = $oConfig->getActiveShop();
 
-        // Prepare data for Sofortueberweisung
-        $sOrderTotalSumString = (string) number_format($oOrder->oxorder__oxtotalordersum->value, 2, ',', '');
-        $aTransactionPlaceholder = [
-            '[BSTNR]' => $oOrder->oxorder__oxordernr->value,
-            '[KNR]'   => $oUser->oxuser__oxcustnr->value,
-            '[KNAME]' => $oUser->oxuser__oxlname->value,
-            '[DATUM]' => date('d.m.Y'),
-            '[PRICE]' => $sOrderTotalSumString,
-            '[SHP]'   => utf8_decode($oActiveShop->oxshops__oxname->value),
-        ];
-
-        $aTransactionPlaceholderKeys = array_keys($aTransactionPlaceholder);
-        $aTransactionPlaceholderValues = array_values($aTransactionPlaceholder);
-
-        $sGatewayReason1 = str_replace($aTransactionPlaceholderKeys, $aTransactionPlaceholderValues, $oConfig->getConfigParam('sTroGatewayReason'));
-        $sGatewayReason2 = str_replace($aTransactionPlaceholderKeys, $aTransactionPlaceholderValues, $oConfig->getConfigParam('sTroGatewayReason2'));
-
-        $sGatewayReason1 = $this->_troReplaceUmlauts($sGatewayReason1);
-        $sGatewayReason2 = $this->_troReplaceUmlauts($sGatewayReason2);
-
-        // Force max gateway length.
-        $sGatewayReason1 = substr($sGatewayReason1, 0, 27);
-        $sGatewayReason2 = substr($sGatewayReason2, 0, 27);
+        $sGatewayReason1 = $this->_getTroPreparedGatewayReason($oOrder, $oConfig->getConfigParam('sTroGatewayReason'));
+        $sGatewayReason2 = $this->_getTroPreparedGatewayReason($oOrder, $oConfig->getConfigParam('sTroGatewayReason2'));
 
         // Create new Sofortueberweisung and fill with data
         $oSofortueberweisung = new Sofortueberweisung($oConfig->getConfigParam('sTroGatewayConfKey'));
@@ -119,15 +107,7 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
         $oSofortueberweisung->setAmount($totalOrderSumAmount);
 
         // force_sid
-        $force_sid = $oConfig->getRequestParameter('force_sid');
-        if (empty($force_sid))
-        {
-            $force_sid = $_COOKIE['force_sid'];
-        }
-        if (empty($force_sid))
-        {
-            $force_sid = $_SESSION['force_sid'];
-        }
+        $force_sid = $this->_getTroForceSid();
 
         ########################################
         // Set urls
@@ -148,11 +128,92 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
         // After setting up an instance of Sofortueberweisung a request is send to the SOFORT API.
         // SOFORT API responses with a URL to which current customer is redirected to.
         $oSofortueberweisung->sendRequest();
+
         $this->_troRedirect($oSofortueberweisung, $oOrder);
     }
 
     /**
-     * _troReplaceUmlauts
+     * Returns a prepared gateway reason.
+     *
+     * @param string $sGatewayReason
+     *
+     * @return string
+     * 
+     * @author  tronet GmbH
+     * @since    8.0.9
+     * @version  8.0.9
+     */
+    protected function _getTroPreparedGatewayReason($oOrder, $sGatewayReason)
+    {
+        $aTransactionPlaceholder = $this->_getTransactionPlaceholders($oOrder);
+
+        $aTransactionPlaceholderKeys = array_keys($aTransactionPlaceholder);
+        $aTransactionPlaceholderValues = array_values($aTransactionPlaceholder);
+
+        $sGatewayReason = str_replace($aTransactionPlaceholderKeys, $aTransactionPlaceholderValues, $sGatewayReason);
+
+        $sGatewayReason = $this->_troNormalizeReason($sGatewayReason);
+
+        return $sGatewayReason;
+    }
+    
+    /**
+     * Returns a prepared gateway reason.
+     *
+     * @param string $sGatewayReason
+     *
+     * @return string
+     * 
+     * @author  tronet GmbH
+     * @since    8.0.9
+     * @version  8.0.9
+     */
+    protected function _getTransactionPlaceholders($oOrder)
+    {
+        if (!isset($this->_aTransactionPlaceholder[$oOrder->oxorder__oxid->value]))
+        {
+            $oUser = $oOrder->getOrderUser();
+            $oActiveShop = $this->getConfig()->getActiveShop();
+
+            $this->_aTransactionPlaceholder[$oOrder->oxorder__oxid->value] = [
+                '[BSTNR]' => $oOrder->oxorder__oxordernr->value,
+                '[KNR]'   => $oUser->oxuser__oxcustnr->value,
+                '[KNAME]' => $oUser->oxuser__oxlname->value,
+                '[DATUM]' => date('d.m.Y'),
+                '[PRICE]' => number_format($oOrder->oxorder__oxtotalordersum->value, 2, ',', ''),
+                '[SHP]'   => utf8_decode($oActiveShop->oxshops__oxname->value),
+            ];
+        }
+
+        return $this->_aTransactionPlaceholder[$oOrder->oxorder__oxid->value];
+    }
+
+    /**
+     * @return string
+     * 
+     * @author  tronet GmbH
+     * @since    8.0.9
+     * @version  8.0.9
+     */
+    public function _getTroForceSid()
+    {
+        $force_sid = $this->getConfig()->getRequestParameter('force_sid');
+        
+        if (!$force_sid)
+        {
+            $force_sid = $_COOKIE['force_sid'];
+        }
+        
+        if (!$force_sid)
+        {
+            $force_sid = $_SESSION['force_sid'];
+        }
+
+        return $force_sid;
+    }
+
+    /**
+     * _troNormalizeReason
      *
      * Replaces umlaut as not every bank supports them in transferal reasons.
      *
@@ -161,60 +222,18 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
      * @return string
      * 
      * @author  tronet GmbH
-     * @since    7.0.0
-     * @version  8.0.0
+     * @since    8.0.9
+     * @version  8.0.9
      */
-    protected function _troReplaceUmlauts($sString)
+    protected function _troNormalizeReason($sString)
     {
-        $aSearch = array(
-            chr(192), chr(193), chr(194), chr(195), chr(196), chr(197), #A
-            chr(198), #AE
-            chr(199), #C
-            chr(200), chr(201), chr(202), chr(203), #E
-            chr(204), chr(205), chr(206), chr(207), #I
-            chr(208), #D
-            chr(209),
-            chr(210), chr(211), chr(212), chr(213), chr(214), chr(216), #O
-            chr(217), chr(218), chr(219), chr(220), #U
-            chr(221), #Y
-            chr(223), #ss
-            chr(224), chr(225), chr(226), chr(227), chr(228), chr(229), #a
-            chr(230), #ae
-            chr(231), #c
-            chr(232), chr(233), chr(234), chr(235), #e
-            chr(236), chr(237), chr(238), chr(239), #i
-            chr(240), #d
-            chr(241), #n
-            chr(242), chr(243), chr(244), chr(245), chr(246), chr(248), #o
-            chr(249), chr(250), chr(251), chr(252), #u
-            chr(253), chr(255), #y
-            chr(39), "&#039;", #'
-        );
-        $aReplace = array(
-            'A', 'A', 'A', 'A', 'Ae', 'A',
-            'Ae',
-            'C',
-            'E', 'E', 'E', 'E',
-            'I', 'I', 'I', 'I',
-            'D',
-            'N',
-            'O', 'O', 'O', 'O', 'Oe', 'O',
-            'U', 'U', 'U', 'Ue',
-            'Y',
-            'ss',
-            'a', 'a', 'a', 'a', 'ae', 'a',
-            'ae',
-            'c',
-            'e', 'e', 'e', 'e',
-            'i', 'i', 'i', 'i',
-            'd',
-            'n',
-            'o', 'o', 'o', 'o', 'oe', 'o',
-            'u', 'u', 'u', 'ue',
-            'y', 'y',
-            '', '',
-        );
-        return str_replace($aSearch, $aReplace, $sString);
+        $oTranslationUtility = oxNew(LocalizationUtility::class);
+
+        $sString = strip_tags(html_entity_decode($sString, ENT_QUOTES));
+        $sString = $oTranslationUtility->troRemoveAccents($sString);
+        $sString = preg_replace("/[^a-zA-Z0-9+,-.\s]/", '', $sString);
+        
+        return substr($sString, 0, 27);
     }
 
     /**

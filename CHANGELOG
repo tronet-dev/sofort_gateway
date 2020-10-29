@@ -134,7 +134,7 @@
 * UPDATED: to SOFORT Api v2.0
 
 ==8.0.2==
-*FIXED: Bug, imgaes couldn't be rendered in emails
+*FIXED: Bug, images couldn't be rendered in emails
 
 ==8.0.3==
 *FIXED: Bug, Translations might be missing in emails
@@ -150,3 +150,8 @@
 ==8.0.8==
 *FIXED: Bug, currency was ignored when order gets finalized by the notification controller if the shopuser quits after paying at Sofort.
 *CHANGED: Before finalizing the status changes to IN_PROGRESS to avoid finalization from several processes simultaneously 
+
+==8.0.9==
+*FIXED: Bug, if article is not available anymore after returning from Sofort, the order could not be completed successfully
+*FIXED: Bug, logic not allowed in metadata
+*FIXED: Bug, could not order when umlauts present in gateway reasons

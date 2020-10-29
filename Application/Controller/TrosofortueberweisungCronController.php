@@ -25,29 +25,42 @@
         /**
          * @author  tronet GmbH
          * @since   8.0.1
-         * @version 8.0.1
+         * @version 8.0.9
          */
         public function render()
         {
             parent::render();
-            $oDB = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
 
-            $sSelectSql = "SELECT oxid FROM oxorder
-                WHERE oxtransstatus = 'NOT_FINISHED'
-                AND oxpaymenttype = 'trosofortgateway_su'
-                AND oxorderdate < date_sub(NOW(), INTERVAL 1 HOUR)
-                AND oxstorno = 0";            
-            $aDbResult = $oDB->getAll($sSelectSql);
+            $oDB = DatabaseProvider::getDb();
+
+            $sSelectSql = "SELECT oxid FROM oxorder"
+                        . " WHERE oxtransstatus = 'NOT_FINISHED'"
+                        . " AND oxpaymenttype = 'trosofortgateway_su'"
+                        . " AND oxorderdate < date_sub(NOW(), INTERVAL 1 HOUR)"
+                        . " AND oxstorno = 0";
+
+            $aOrderIds = (array) $oDB->getCol($sSelectSql);
             
-            foreach($aDbResult as $aDbRow)
+            foreach($aOrderIds as $sOrderId)
             {
-                $sOrderId = $aDbRow['oxid'];
-                $oOrder = oxNew(Order::class);
-                $oOrder->load($sOrderId);
-                $oOrder->troDeleteOldOrder();
+                $this->_troDeleteOrder($sOrderId);
             }
             
             // just exit, as we are not in frontend here
             Registry::getUtils()->showMessageAndExit('');
+        }
+
+        /**
+         * @param string $sOxId
+         *
+         * @author  tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _troDeleteOrder($sOrderId)
+        {
+            $oOrder = oxNew(Order::class);
+            $oOrder->load($sOrderId);
+            $oOrder->troDeleteOldOrder();
         }
     }

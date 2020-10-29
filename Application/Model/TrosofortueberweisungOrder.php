@@ -249,7 +249,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      * 
      * @author  tronet GmbH
      * @since   8.0.1
-     * @version 8.0.1
+     * @version 8.0.9
      */
     protected function _getTroSOFORTOrderStatus($sOrderId)
     {
@@ -258,9 +258,10 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
             $oDb = DatabaseProvider::getDb();
             $sSql = "SELECT oxtransstatus FROM oxorder
                   WHERE oxpaymenttype = 'trosofortgateway_su'
-                  AND oxid = ".$oDb->quote($sOrderId);
-            $this->_sOrderStatus = $oDb->getOne($sSql);
+                  AND oxid = ?";
+            $this->_sOrderStatus = $oDb->getOne($sSql, [$sOrderId]);
         }
+
         return $this->_sOrderStatus;
     }
 
@@ -395,8 +396,8 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
     protected function _troMarkVouchersAsUnused()
     {
         $oDb = DatabaseProvider::getDb();
-        $sUpdate = "UPDATE oxvouchers SET oxdateused = 0, oxorderid = '', oxuserid = '' WHERE oxorderid = '".$this->getId()."'";
-        $oDb->execute($sUpdate);
+        $sUpdate = "UPDATE oxvouchers SET oxdateused = 0, oxorderid = '', oxuserid = '' WHERE oxorderid = ?";
+        $oDb->execute($sUpdate, [$this->getId()]);
     }
 
     /**

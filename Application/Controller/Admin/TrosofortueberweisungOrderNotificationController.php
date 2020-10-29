@@ -99,25 +99,41 @@
          * 
          * @author tronet GmbH
          * @since   7.0.0
-         * @version 8.0.0
+         * @version 8.0.9
          */
         public function getTroAllLogs()
         {
-            $oTrosofortueberweisungGatewayLog = oxNew(ListObject::class, TrosofortueberweisungGatewayLog::class);
+            $oTrosofortueberweisungGatewayLog = $this->_getEmptyTroLogList();
             $sOxid = $this->getEditObjectId();
-            if (isset($sOxid) && $sOxid !== '1')
-            {
-                $oOrder = oxNew(Order::class);
-                $oOrder->load($sOxid);
+            
+            $oOrder = oxNew(Order::class);
 
+            if (isset($sOxid) && $sOxid !== '1' && $oOrder->load($sOxid))
+            {
                 $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
-                $sSqlSelect = "select * from trogatewaylog where transactionid='{$oOrder->oxorder__oxtransid->value}' order by timestamp DESC";
-                $aData = $oDb->getAll($sSqlSelect);
+                
+                $sSqlSelect = 'SELECT * FROM trogatewaylog WHERE transactionid = ? ORDER BY timestamp DESC';
+                
+                $aData = $oDb->getAll($sSqlSelect, [$oOrder->oxorder__oxtransid->value]);
 
                 $oTrosofortueberweisungGatewayLog->assign($aData);
             }
 
             return $oTrosofortueberweisungGatewayLog;
+        }
+
+        /**
+         * Loads a new trogatewaylog-list.
+         *
+         * @return ListObject
+         * 
+         * @author tronet GmbH
+         * @since   8.0.9
+         * @version 8.0.9
+         */
+        protected function _getEmptyTroLogList()
+        {
+            return oxNew(ListObject::class, TrosofortueberweisungGatewayLog::class);
         }
 
         /**

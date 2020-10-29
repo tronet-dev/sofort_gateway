@@ -98,28 +98,17 @@
         }
 
         /**
-         * Get the release version. Optionally separator dot can be
-         * adjusted as required. By default a dot is used as separator.
+         * Get the release version.
          *
-         * @param string|null $sSeparator
          *
          * @return string
          * @author  tronet GmbH
          * @since   7.0.0
-         * @version 8.0.0
+         * @version 8.0.9
          */
-        public function getTroModuleVersion($sSeparator = null)
+        public function getTroModuleVersion()
         {
-            if (is_string($sSeparator))
-            {
-                $sReturn = str_replace('.', '_', $this->_sModuleVersion);
-            }
-            else
-            {
-                $sReturn = $this->_sModuleVersion;
-            }
-
-            return $sReturn;
+            return $this->_sModuleVersion;
         }
 
         /**
@@ -150,8 +139,6 @@
 
         /**
          * @param TrosofortueberweisungRequirements $oTroSofortueberweisungRequirements
-         *
-         * @return TrosofortueberweisungRelease
          * 
          * @author  tronet GmbH
          * @since   7.0.0
@@ -180,8 +167,6 @@
          * Set the download url.
          *
          * @param string $sDownloadLink
-         *
-         * @return TrosofortueberweisungRelease
          * 
          * @author  tronet GmbH
          * @since   7.0.0
@@ -206,8 +191,6 @@
 
         /**
          * @param string $sArchiveFileName
-         *
-         * @return TrosofortueberweisungRelease
          * 
          * @author  tronet GmbH
          * @since   7.0.0

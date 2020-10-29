@@ -56,7 +56,7 @@ class TrosofortueberweisungNotificationController extends FrontendController
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.1
+     * @version 8.0.9
      */
     protected function _troUpdateOrderByStatus()
     {           
@@ -70,6 +70,7 @@ class TrosofortueberweisungNotificationController extends FrontendController
             case 'pending':
                 $this->_troFinalizeOrderIfStatusNotFinished($oTransactionData);
                 Registry::getUtils()->showMessageAndExit('payment pending');
+                break;
 
             // "Deutsche Handelsbank" account - money not received
             case 'loss':
@@ -181,12 +182,12 @@ class TrosofortueberweisungNotificationController extends FrontendController
      *
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.0
+     * @version 8.0.9
      */
     protected function _troStoreGatewayLog($oTransactionData)
     {
         $sTransactionId = $oTransactionData->getTransaction();
-        $oTroGatewayLog = oxNew(TrosofortueberweisungGatewayLog::class);
+        $oTroGatewayLog = $this->_getTroGatewayLog();
         $aTroGatewayLogNewestEntry = $oTroGatewayLog->getTroNewestLog($sTransactionId);
         
         // Datum des bereits in der Datenbank gespeicherten Eintrags ist ungleich der aktuell vorliegenden Statusaenderung
@@ -198,6 +199,18 @@ class TrosofortueberweisungNotificationController extends FrontendController
             $oTroGatewayLog->trogatewaylog__timestamp = new Field($oTransactionData->getStatusModifiedTime());
             $oTroGatewayLog->save();
         }
+    }
+
+    /**
+     * @return TrosofortueberweisungGatewayLog
+     *
+     * @author  tronet GmbH
+     * @since   8.0.9
+     * @version 8.0.9
+     */
+    protected function _getTroGatewayLog()
+    {
+        return oxNew(TrosofortueberweisungGatewayLog::class);
     }
 
     /**

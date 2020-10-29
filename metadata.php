@@ -10,22 +10,15 @@
      */
     $sMetadataVersion = '2.0';
 
-    $troCurrentLanguageAbbreviation = OxidEsales\Eshop\Core\Registry::getLang()->translateString('TRO_CURRENT_LANGUAGE');
-
-    if (empty($troCurrentLanguageAbbreviation))
-    {
-        $troCurrentLanguageAbbreviation = 'en';
-    }
-
     $aModule = [
         'id'          => 'trosofortueberweisung',
-        'title'       => '<img height="10px" style="margin-top: 3px;" src="../modules/tronet/trosofortueberweisung/out/img/tronet.gif" /> Sofort.',
+        'title'       => '<img height="10px" src="../modules/tronet/trosofortueberweisung/out/img/tronet.gif" /> Sofort.',
         'description' => [
             'de' => 'Sofort. by tronet',
             'en' => 'Sofort. by tronet',
         ],
-        'thumbnail'   => "out/img/logo_sofort.php?language=be_{$troCurrentLanguageAbbreviation}&columns=250&rows=55",
-        'version'     => '8.0.8',
+        'thumbnail'   => "out/img/logo_sofort_fallback.png",
+        'version'     => '8.0.9',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
@@ -129,5 +122,4 @@
                 'value' => '1',
             ],
         ],
-
     ];

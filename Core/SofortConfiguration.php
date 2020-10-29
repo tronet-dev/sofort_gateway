@@ -38,13 +38,6 @@
         protected $_sTroMetaHashLinkRaw;
 
         /**
-         * @var string $_sLogFile
-         * @author tronet GmbH
-         * @since  7.0.0
-         */
-        protected $_sLogFile;
-
-        /**
          * @const string API_VERSION
          * @author tronet GmbH
          * @since  8.0.1
@@ -63,7 +56,6 @@
             $this->_setTroChangeLogUrl('http://sofort.tro.net/trosofortueberweisung_changelog.txt');
             $this->_setTroReleaseListUrl('http://sofort.tro.net/Versions/trosofortueberweisung_versions.xml');
             $this->_setTroMetaHashLinkRaw('http://sofort.tro.net/Module-File-Hashes/trometahashes_%1$s.xml');
-            $this->_setTroLogFile('SOFORTGATEWAY_LOG.txt');
         }
 
         /**
@@ -109,20 +101,6 @@
         }
 
         /**
-         * Set the log file
-         *
-         * @param string $sLogFile
-         *
-         * @author tronet GmbH
-         * @since  7.0.0
-         * @version 8.0.0
-         */
-        protected function _setTroLogFile($sLogFile)
-        {
-            $this->_sLogFile = $sLogFile;
-        }
-
-        /**
          * Get the change log url.
          *
          * @return string $this->_sChangeLogUrl
@@ -162,20 +140,6 @@
         public function getTroMetaHashLinkRaw()
         {
             return $this->_sTroMetaHashLinkRaw;
-        }
-
-        /**
-         * Get the log file.
-         *
-         * @return string $this->_sLogFile
-         * 
-         * @author tronet GmbH
-         * @since  7.0.0
-         * @version 8.0.0
-         */
-        public function getTroLogFile()
-        {
-            return $this->_sLogFile;
         }
 
         /**

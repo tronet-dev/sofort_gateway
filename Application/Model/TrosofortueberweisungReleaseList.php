@@ -106,7 +106,7 @@
          * 
          * @author  tronet GmbH
          * @since   7.0.0
-         * @version 8.0.0
+         * @version 8.0.9
          */
         public function getTroLatestRelease($sModuleVersion, $sOxidEdition, $sOxidVersion, $sPhpVersion)
         {
@@ -118,43 +118,14 @@
                 {
                     if ($oSOFORTRelease->troDoesModuleVersionSatisfyInstalledVersion($sModuleVersion, $sOxidEdition, $sOxidVersion, $sPhpVersion))
                     {
-                        $oLatestRelease = $oSOFORTRelease;
+                        if (!isset($oLatestRelease) || version_compare($oLatestRelease->getTroModuleVersion(), $oSOFORTRelease->getTroModuleVersion(), '<'))
+                        {
+                            $oLatestRelease = $oSOFORTRelease;
+                        }
                     }
                 }
             }
 
             return $oLatestRelease;
-        }
-
-        /**
-         * Finds and returns specified release. In case the version is in a different
-         * format it can be specified as well.
-         *
-         * @param string $sModuleVersion
-         * @param null   $sFormat
-         *
-         * @return null|TrosofortueberweisungRelease
-         * 
-         * @author  tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function getTroRelease($sModuleVersion, $sFormat = null)
-        {
-            $oTrosofortueberweisungRelease = null;
-
-            if (is_array($this->_aArray))
-            {
-                foreach ($this->_aArray as $oSOFORTRelease)
-                {
-                    if ($oSOFORTRelease->getTroModuleVersion($sFormat) === $sModuleVersion)
-                    {
-                        $oTrosofortueberweisungRelease = $oSOFORTRelease;
-                        break;
-                    }
-                }
-            }
-
-            return $oTrosofortueberweisungRelease;
         }
     }
