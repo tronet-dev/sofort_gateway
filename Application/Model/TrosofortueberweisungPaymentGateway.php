@@ -23,7 +23,7 @@ use Tronet\Trosofortueberweisung\Core\Utility\LocalizationUtility;
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       8.0.6
+ * @version       8.0.9
  *
  * @property string $sRedirUrl
  */
@@ -138,7 +138,7 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
      * @param string $sGatewayReason
      *
      * @return string
-     * 
+     *
      * @author  tronet GmbH
      * @since    8.0.9
      * @version  8.0.9
@@ -163,7 +163,7 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
      * @param string $sGatewayReason
      *
      * @return string
-     * 
+     *
      * @author  tronet GmbH
      * @since    8.0.9
      * @version  8.0.9
@@ -190,7 +190,7 @@ class TrosofortueberweisungPaymentGateway extends TrosofortueberweisungPaymentGa
 
     /**
      * @return string
-     * 
+     *
      * @author  tronet GmbH
      * @since    8.0.9
      * @version  8.0.9

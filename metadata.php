@@ -18,7 +18,7 @@
             'en' => 'Sofort. by tronet',
         ],
         'thumbnail'   => "out/img/logo_sofort_fallback.png",
-        'version'     => '8.0.9',
+        'version'     => '8.0.10',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
@@ -75,6 +75,7 @@
             \OxidEsales\Eshop\Application\Model\PaymentGateway::class                  => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungPaymentGateway::class,
             \OxidEsales\Eshop\Application\Model\Basket::class                          => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungBasket::class,
             \OxidEsales\Eshop\Application\Model\Order::class                           => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungOrder::class,
+            \OxidEsales\Eshop\Application\Model\Discount::class                        => \Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungDiscount::class,
 
             // Controller - FE
             \OxidEsales\Eshop\Application\Controller\OrderController::class            => \Tronet\Trosofortueberweisung\Application\Controller\TrosofortueberweisungOrderController::class,

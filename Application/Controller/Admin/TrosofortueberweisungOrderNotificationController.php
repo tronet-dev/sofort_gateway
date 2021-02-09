@@ -1,178 +1,178 @@
 <?php
 
-    namespace Tronet\Trosofortueberweisung\Application\Controller\Admin;
+namespace Tronet\Trosofortueberweisung\Application\Controller\Admin;
 
-    use OxidEsales\Eshop\Core\DatabaseProvider;
-    use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
-    use OxidEsales\Eshop\Application\Model\ListObject;
-    use OxidEsales\Eshop\Application\Model\Order;
-    use OxidEsales\Eshop\Core\Field;
-    use Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungGatewayLog;
+use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Application\Model\ListObject;
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Field;
+use Tronet\Trosofortueberweisung\Application\Model\TrosofortueberweisungGatewayLog;
 
+/**
+ * Admin order overview manager.
+ * Collects order payment status information, updates it on user submit, etc.
+ * Admin Menu: Orders -> Display Orders -> log.
+ *
+ * @link          http://www.tro.net
+ * @copyright (c) tronet GmbH 2018
+ * @author        tronet GmbH
+ *
+ * @since         7.0.0
+ * @version       8.0.9
+ */
+class TrosofortueberweisungOrderNotificationController extends AdminDetailsController
+{
     /**
-     * Admin order overview manager.
-     * Collects order payment status information, updates it on user submit, etc.
-     * Admin Menu: Orders -> Display Orders -> log.
-     *
-     * @link          http://www.tro.net
-     * @copyright (c) tronet GmbH 2018
+     * @var ThisTemplate $_sThisTemplate
+     * 
      * @author        tronet GmbH
-     *
-     * @since         7.0.0
+     * @since         8.0.0
      * @version       8.0.0
      */
-    class TrosofortueberweisungOrderNotificationController extends AdminDetailsController
+    protected $_sThisTemplate = 'trosofortueberweisungorder_notifications.tpl';       
+
+    /**
+     * Returns formatted log data.
+     *
+     * @return string $sFormattedLogData
+     * 
+     * @author tronet GmbH
+     * @since   7.0.0
+     * @version 8.0.0
+     */
+    public function getTroFormattedLogData()
     {
-        /**
-         * @var ThisTemplate $_sThisTemplate
-         * 
-         * @author        tronet GmbH
-         * @since         8.0.0
-         * @version       8.0.0
-         */
-        protected $_sThisTemplate = 'trosofortueberweisungorder_notifications.tpl';       
-
-        /**
-         * Returns formatted log data.
-         *
-         * @return string $sFormattedLogData
-         * 
-         * @author tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function getTroFormattedLogData()
+        $sFormattedLogData = '';
+        $oTrosofortueberweisungGatewayLog = $this->getTroLog();
+        if ($oTrosofortueberweisungGatewayLog instanceof TrosofortueberweisungGatewayLog)
         {
-            $sFormattedLogData = '';
-            $oTrosofortueberweisungGatewayLog = $this->getTroLog();
-            if ($oTrosofortueberweisungGatewayLog instanceof TrosofortueberweisungGatewayLog)
-            {
-                $sFormattedLogData = 'Timestamp: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__timestamp->value . "\n";
-                $sFormattedLogData .= 'Status: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__status->value . "\n";
-                $sFormattedLogData .= 'Status-Reason: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__statusreason->value . "\n";
-                $sFormattedLogData .= 'Transaction-ID: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__transactionid->value . "\n";
-            }
-
-            return $sFormattedLogData;
+            $sFormattedLogData = 'Timestamp: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__timestamp->value . "\n";
+            $sFormattedLogData .= 'Status: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__status->value . "\n";
+            $sFormattedLogData .= 'Status-Reason: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__statusreason->value . "\n";
+            $sFormattedLogData .= 'Transaction-ID: ' . $oTrosofortueberweisungGatewayLog->trogatewaylog__transactionid->value . "\n";
         }
 
-        /**
-         * Loads trogatewaylog-entry from DB.
-         *
-         * @return TrosofortueberweisungGatewayLog|bool
-         * 
-         * @author tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function getTroLog()
-        {
-            $sLogOxid = $this->getTroLogOxid();
-            $oReturn = false;
-            if (isset($sLogOxid))
-            {
-                $oReturn = oxNew(TrosofortueberweisungGatewayLog::class);
-                $oReturn->load($sLogOxid);
-            }
+        return $sFormattedLogData;
+    }
 
-            return $oReturn;
+    /**
+     * Loads trogatewaylog-entry from DB.
+     *
+     * @return TrosofortueberweisungGatewayLog|bool
+     * 
+     * @author tronet GmbH
+     * @since   7.0.0
+     * @version 8.0.0
+     */
+    public function getTroLog()
+    {
+        $sLogOxid = $this->getTroLogOxid();
+        $oReturn = false;
+        if (isset($sLogOxid))
+        {
+            $oReturn = oxNew(TrosofortueberweisungGatewayLog::class);
+            $oReturn->load($sLogOxid);
         }
 
-        /**
-         * Returns value of request param log_oxid.
-         *
-         * @return string
-         * 
-         * @author tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function getTroLogOxid()
-        {
-            return $this->getConfig()->getRequestParameter('log_oxid');
-        }
+        return $oReturn;
+    }
 
-        /**
-         * Loads trogatewaylog-entries from DB
-         *
-         * @return ListObject $oLogs
-         * 
-         * @author tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.9
-         */
-        public function getTroAllLogs()
+    /**
+     * Returns value of request param log_oxid.
+     *
+     * @return string
+     * 
+     * @author tronet GmbH
+     * @since   7.0.0
+     * @version 8.0.0
+     */
+    public function getTroLogOxid()
+    {
+        return $this->getConfig()->getRequestParameter('log_oxid');
+    }
+
+    /**
+     * Loads trogatewaylog-entries from DB
+     *
+     * @return ListObject $oLogs
+     * 
+     * @author tronet GmbH
+     * @since   7.0.0
+     * @version 8.0.9
+     */
+    public function getTroAllLogs()
+    {
+        $oTrosofortueberweisungGatewayLog = $this->_getEmptyTroLogList();
+        $sOxid = $this->getEditObjectId();
+        
+        $oOrder = oxNew(Order::class);
+
+        if (isset($sOxid) && $sOxid !== '1' && $oOrder->load($sOxid))
         {
-            $oTrosofortueberweisungGatewayLog = $this->_getEmptyTroLogList();
-            $sOxid = $this->getEditObjectId();
+            $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
             
-            $oOrder = oxNew(Order::class);
+            $sSqlSelect = 'SELECT * FROM trogatewaylog WHERE transactionid = ? ORDER BY timestamp DESC';
+            
+            $aData = $oDb->getAll($sSqlSelect, [$oOrder->oxorder__oxtransid->value]);
 
-            if (isset($sOxid) && $sOxid !== '1' && $oOrder->load($sOxid))
-            {
-                $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
-                
-                $sSqlSelect = 'SELECT * FROM trogatewaylog WHERE transactionid = ? ORDER BY timestamp DESC';
-                
-                $aData = $oDb->getAll($sSqlSelect, [$oOrder->oxorder__oxtransid->value]);
-
-                $oTrosofortueberweisungGatewayLog->assign($aData);
-            }
-
-            return $oTrosofortueberweisungGatewayLog;
+            $oTrosofortueberweisungGatewayLog->assign($aData);
         }
 
-        /**
-         * Loads a new trogatewaylog-list.
-         *
-         * @return ListObject
-         * 
-         * @author tronet GmbH
-         * @since   8.0.9
-         * @version 8.0.9
-         */
-        protected function _getEmptyTroLogList()
+        return $oTrosofortueberweisungGatewayLog;
+    }
+
+    /**
+     * Loads a new trogatewaylog-list.
+     *
+     * @return ListObject
+     * 
+     * @author tronet GmbH
+     * @since   8.0.9
+     * @version 8.0.9
+     */
+    protected function _getEmptyTroLogList()
+    {
+        return oxNew(ListObject::class, TrosofortueberweisungGatewayLog::class);
+    }
+
+    /**
+     * Extends method by our needs.
+     *
+     * Saves trogatewaylog-entry text changes.
+     * 
+     * @author tronet GmbH
+     * @since   7.0.0
+     * @version 8.0.0
+     */
+    public function save()
+    {
+        parent::save();
+
+        $oOrder = oxNew(Order::class);
+        if ($oOrder->load($this->getEditObjectId()))
         {
-            return oxNew(ListObject::class, TrosofortueberweisungGatewayLog::class);
-        }
+            $sTroGatewayLogTransactionId = $this->getConfig()->getRequestParameter('trogatewaylog__transactionid');
 
-        /**
-         * Extends method by our needs.
-         *
-         * Saves trogatewaylog-entry text changes.
-         * 
-         * @author tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function save()
-        {
-            parent::save();
-
-            $oOrder = oxNew(Order::class);
-            if ($oOrder->load($this->getEditObjectId()))
-            {
-                $sTroGatewayLogTransactionId = $this->getConfig()->getRequestParameter('trogatewaylog__transactionid');
-
-                $oTrosofortueberweisungGatewayLog = oxNew(TrosofortueberweisungGatewayLog::class);
-                $oTrosofortueberweisungGatewayLog->load($this->getTroLogOxid());
-                $oTrosofortueberweisungGatewayLog->trogatewaylog__transactionid = new Field($sTroGatewayLogTransactionId);
-                $oTrosofortueberweisungGatewayLog->save();
-            }
-        }
-
-        /**
-         * Extends method by our needs.
-         *
-         * Deletes trogatewaylog-entry from DB
-         * 
-         * @author tronet GmbH
-         * @since   7.0.0
-         * @version 8.0.0
-         */
-        public function delete()
-        {
             $oTrosofortueberweisungGatewayLog = oxNew(TrosofortueberweisungGatewayLog::class);
-            $oTrosofortueberweisungGatewayLog->delete($this->getTroLogOxid());
+            $oTrosofortueberweisungGatewayLog->load($this->getTroLogOxid());
+            $oTrosofortueberweisungGatewayLog->trogatewaylog__transactionid = new Field($sTroGatewayLogTransactionId);
+            $oTrosofortueberweisungGatewayLog->save();
         }
     }
+
+    /**
+     * Extends method by our needs.
+     *
+     * Deletes trogatewaylog-entry from DB
+     * 
+     * @author tronet GmbH
+     * @since   7.0.0
+     * @version 8.0.0
+     */
+    public function delete()
+    {
+        $oTrosofortueberweisungGatewayLog = oxNew(TrosofortueberweisungGatewayLog::class);
+        $oTrosofortueberweisungGatewayLog->delete($this->getTroLogOxid());
+    }
+}

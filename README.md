@@ -35,7 +35,7 @@ You can update SOFORT Überweisung and its dependencies by running `composer upd
 
 |Module version| supported OXID eShop version
 |:------------:|:---------------------------:
-|8.0.3         | 6.0 - 6.1
+|8.0.10        | 6.0 - 6.2
 |7.0.5         | 4.7 - 4.10
 
 ## FAQ

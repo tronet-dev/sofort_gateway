@@ -20,7 +20,7 @@ use Sofort\SofortLib\TransactionData;
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       8.0.8
+ * @version       8.0.9
  */
 class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderController_parent
 {
@@ -147,7 +147,7 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
     protected function _troSOFORTOrderHasBeenPayed($sPaymentStatus)
     {
         $aValidPaymentStatus = ['pending', 'received', 'untraceable'];
-        
+
         return in_array($sPaymentStatus, $aValidPaymentStatus);
     }
 
@@ -161,7 +161,7 @@ class TrosofortueberweisungOrderController extends TrosofortueberweisungOrderCon
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 8.0.1
+     * @version 8.0.9
      */
     protected function _troSOFORTOrderIsNotFinishedYet($oOrder)
     {

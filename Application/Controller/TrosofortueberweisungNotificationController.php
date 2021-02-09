@@ -24,7 +24,7 @@ use Tronet\Trosofortueberweisung\Core\SofortConfiguration;
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       8.0.8
+ * @version       8.0.9
  */
 class TrosofortueberweisungNotificationController extends FrontendController
 {

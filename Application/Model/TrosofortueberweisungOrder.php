@@ -23,7 +23,7 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
  * @author        tronet GmbH
  *
  * @since         8.0.0
- * @version       8.0.7
+ * @version       8.0.10
  */
 class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 {
@@ -59,11 +59,12 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      *
      * @author  tronet GmbH
      * @since   8.0.0
-     * @version 8.0.6
+     * @version 8.0.10
      */
     public function getTroOrderBasket()
     {
         $oBasket = $this->_getOrderBasket();
+        $oBasket->setTroRecalculatedBasket(true);
         $this->_oArticles = null;
         
         $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
@@ -273,7 +274,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      * 
      * @author  tronet GmbH
      * @since   8.0.1
-     * @version 8.0.1
+     * @version 8.0.10
      */
     protected function _troHandleExistingSOFORTOrder()
     {
@@ -301,6 +302,10 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
                 // die Funktion oxoderarticles->delete berücksichtigt den Lagerbestand
                 $oOrderArticle->delete();
             }
+            // wenn man zur Sofort AG umgeleitet wird und mit dem Back-Button in den Shop zurückkehrt und eine andere Zahlungsart auswählt,
+            // dann aus der alten Bestellung die Transaktions-ID löschen
+            $this->oxorder__oxtransid = new Field('');
+            $this->oxorder__trousersession = new Field('');
         }
         elseif ($sOrderStatus == 'OK')
         {
