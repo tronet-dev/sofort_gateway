@@ -23,7 +23,7 @@ use OxidEsales\Eshop\Core\Model\BaseModel;
  * @author        tronet GmbH
  *
  * @since         8.0.0
- * @version       8.0.10
+ * @version       8.0.11
  */
 class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
 {
@@ -59,7 +59,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
      *
      * @author  tronet GmbH
      * @since   8.0.0
-     * @version 8.0.10
+     * @version 8.0.11
      */
     public function getTroOrderBasket()
     {
@@ -67,7 +67,7 @@ class TrosofortueberweisungOrder extends TrosofortueberweisungOrder_parent
         $oBasket->setTroRecalculatedBasket(true);
         $this->_oArticles = null;
         
-        $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        $oBasket->troAddOrderArticlesToBasket($this->getOrderArticles(true));
         $oBasket->calculateBasket(true);
 
         return $oBasket;

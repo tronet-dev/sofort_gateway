@@ -10,7 +10,7 @@ use OxidEsales\Eshop\Application\Model\Basket;
  * @author        tronet GmbH
  *
  * @since         8.0.6
- * @version       8.0.10
+ * @version       8.0.11
  */
 class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
 {
@@ -60,5 +60,37 @@ class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
     public function troIsRecalculatedBasket()
     {
         return $this->_blTroRecalculatedBasket;
+    }
+
+    /**
+     * Adds order articles to basket without removing bundle articles
+     *
+     * @author  tronet GmbH
+     * @since   8.0.11
+     * @version 8.0.11
+     */
+    public function troAddOrderArticlesToBasket($aOrderArticles)
+    {
+        if (count($aOrderArticles) > 0)
+        {
+            foreach ($aOrderArticles as $oOrderArticle)
+            {
+                if ($oOrderArticle->oxorderarticles__oxamount->value > 0 && !$oOrderArticle->isBundle()) {
+                    $this->_isForOrderRecalculation = true;
+                    $sItemId = $oOrderArticle->getId();
+        
+                    //inserting new
+                    $this->_aBasketContents[$sItemId] = oxNew(\OxidEsales\Eshop\Application\Model\BasketItem::class);
+                    $this->_aBasketContents[$sItemId]->initFromOrderArticle($oOrderArticle);
+                    $this->_aBasketContents[$sItemId]->setWrapping($oOrderArticle->oxorderarticles__oxwrapid->value);
+                    $this->_aBasketContents[$sItemId]->setBundle($oOrderArticle->isBundle());
+        
+                    //calling update method
+                    $this->onUpdate();
+        
+                    return $this->_aBasketContents[$sItemId];
+                }
+            }
+        }
     }
 }

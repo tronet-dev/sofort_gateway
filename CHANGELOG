@@ -156,7 +156,7 @@
 
 ==8.0.8==
 *FIXED: Bug, currency was ignored when order gets finalized by the notification controller if the shopuser quits after paying at Sofort.
-*CHANGED: Before finalizing the status changes to IN_PROGRESS to avoid finalization from several processes simultaneously 
+*CHANGED: Before finalizing the status changes to IN_PROGRESS to avoid finalization from several processes simultaneously
 
 ==8.0.9==
 *FIXED: Bug, if article is not available anymore after returning from Sofort, the order could not be completed successfully
@@ -166,3 +166,6 @@
 ==8.0.10==
 *FIXED: Bug, using back button to get from Sofort to shop didn't delete all sofort-related data from order-object
 *FIXED: Bug, price was shown wrong in admin order overview when a discount was granted and the total basket price including the discount was below the discount minimal price value
+
+==8.0.11==
+*FIXED: Bug, stock amount of bundle articles does not get reduced
