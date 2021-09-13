@@ -6,7 +6,7 @@
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       7.0.8
+ * @version       7.0.9
  */
 class trosofortueberweisungorder extends trosofortueberweisungorder_parent
 {
@@ -41,7 +41,7 @@ class trosofortueberweisungorder extends trosofortueberweisungorder_parent
         {
             // setze Status auf IN_PROGRESS, damit Notification-Controller nicht während der Abarbeitung dieser Methode die gleiche Bestellung finalisiert
             // Speichern erfolgt nicht mit $oOrder->save, da die Methode noch Nebeneffekte aufweisen kann
-            $oDB = oxDb::getDb();
+            $oDb = oxDb::getDb();
             $sUpdate = "UPDATE oxorder SET oxtransstatus = 'IN_PROGRESS' WHERE oxid = '$sOrderId'";
             $oDb->execute($sUpdate); 
 
@@ -81,7 +81,7 @@ class trosofortueberweisungorder extends trosofortueberweisungorder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 7.0.3
+     * @version 7.0.9
      */
     protected function _troContinueExecuteSofortueberweisungOrder($oOrder)
     {
@@ -98,14 +98,7 @@ class trosofortueberweisungorder extends trosofortueberweisungorder_parent
         $oTransactionData->sendRequest();
         $sTransactionDataStatus = $oTransactionData->getStatus();
 
-        if ($this->_troSOFORTOrderHasBeenPayed($sTransactionDataStatus) && $this->_troSOFORTOrderIsNotFinishedYet($oOrder))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return $this->_troSOFORTOrderHasBeenPayed($sTransactionDataStatus) && $this->_troSOFORTOrderIsNotFinishedYet($oOrder);
     }
 
     /**
@@ -120,14 +113,13 @@ class trosofortueberweisungorder extends trosofortueberweisungorder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 7.0.3
+     * @version 7.0.9
      */
     protected function _troSOFORTOrderHasBeenPayed($sPaymentStatus)
     {
         $aValidPaymentStatus = array('pending', 'received', 'untraceable');
-        $blSOFORTOrderHasBeenPayed = in_array($sPaymentStatus, $aValidPaymentStatus);
 
-        return $blSOFORTOrderHasBeenPayed;
+        return in_array($sPaymentStatus, $aValidPaymentStatus);
     }
 
     /**
@@ -140,12 +132,10 @@ class trosofortueberweisungorder extends trosofortueberweisungorder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 7.0.3
+     * @version 7.0.9
      */
     protected function _troSOFORTOrderIsNotFinishedYet($oOrder)
     {
-        $blSOFORTOrderIsNotFinishedYet = (bool)($oOrder->oxorder__oxtransstatus->value == 'NOT_FINISHED');
-
-        return $blSOFORTOrderIsNotFinishedYet;
+        return $oOrder->oxorder__oxtransstatus->value === 'NOT_FINISHED';
     }
 }

@@ -19,15 +19,11 @@
 class trosofortueberweisung_list extends oxAdminList
 {
     /**
-     * Extends rendering process by our needs.
+     * @var ThisTemplate $_sThisTemplate
      *
-     * @return string
-     * @author tronet GmbH
-     * @since  7.0.0
+     * @author        tronet GmbH
+     * @since         7.0.9
+     * @version       7.0.9
      */
-    public function render()
-    {
-        parent::render();
-        return "trosofortueberweisung_list.tpl";
-    }
+    protected $_sThisTemplate = 'trosofortueberweisung_list.tpl';
 }

@@ -6,7 +6,7 @@
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       7.0.6
+ * @version       7.0.11
  */
 class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent 
 {
@@ -42,14 +42,15 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      *
      * @author  tronet GmbH
      * @since   7.0.3
-     * @version 7.0.6
+     * @version 7.0.11
      */
     public function getTroOrderBasket()
     {
         $oBasket = $this->_getOrderBasket();
+        $oBasket->setTroRecalculatedBasket(true);
         $this->_oArticles = null;
 
-        $this->_addOrderArticlesToBasket($oBasket, $this->getOrderArticles(true));
+        $oBasket->troAddOrderArticlesToBasket($this->getOrderArticles(true));
         $oBasket->calculateBasket(true);
 
         return $oBasket;
@@ -112,7 +113,7 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      * 
      * @author  tronet GmbH
      * @since   7.0.0
-     * @version 7.0.6
+     * @version 7.0.10
      */
     public function finalizeOrder(oxBasket $oBasket, $oUser, $blRecalculatingOrder = false)
     {
@@ -247,8 +248,8 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
             $oDb = oxDb::getDb();
             $sSql = "SELECT oxtransstatus FROM oxorder
                   WHERE oxpaymenttype = 'trosofortgateway_su'
-                  AND oxid = ".$oDb->quote($sOrderId);
-            $this->_sOrderStatus = $oDb->getOne($sSql);
+                  AND oxid = ?";
+            $this->_sOrderStatus = $oDb->getOne($sSql, array($sOrderId));
         }
         return $this->_sOrderStatus;
     }
@@ -289,6 +290,10 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
                 // die Funktion oxoderarticles->delete berücksichtigt den Lagerbestand
                 $oOrderArticle->delete();
             }
+            // wenn man zur Sofort AG umgeleitet wird und mit dem Back-Button in den Shop zurückkehrt und eine andere Zahlungsart auswählt,
+            // dann aus der alten Bestellung die Transaktions-ID löschen
+            $this->oxorder__oxtransid = new oxField('');
+            $this->oxorder__trousersession = new oxField('');
         }
         elseif ($sOrderStatus == 'OK')
         {
@@ -380,13 +385,13 @@ class trosofortueberweisungoxorder extends trosofortueberweisungoxorder_parent
      *
      * @author  tronet GmbH
      * @since   7.0.3
-     * @version 7.0.3
+     * @version 7.0.9
      */
     protected function _troMarkVouchersAsUnused()
     {
         $oDb = oxDb::getDb();
-        $sUpdate = "UPDATE oxvouchers SET oxdateused = 0, oxorderid = '', oxuserid = '' WHERE oxorderid = '".$this->getId()."'";
-        $oDb->execute($sUpdate);
+        $sUpdate = "UPDATE oxvouchers SET oxdateused = 0, oxorderid = '', oxuserid = '' WHERE oxorderid = ?";
+        $oDb->execute($sUpdate, array($this->getId()));
     }
 
     /**

@@ -8,7 +8,7 @@ tronet GmbH
 tro
 
 ==Version==
-7.0.8
+7.0.11
 
 ==Link==
 http://www.tronet.media

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link          http://www.tro.net
  * @copyright (c) tronet GmbH 2018

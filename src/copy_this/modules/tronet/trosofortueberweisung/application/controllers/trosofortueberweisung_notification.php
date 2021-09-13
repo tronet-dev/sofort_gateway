@@ -11,7 +11,7 @@
  * @author        tronet GmbH
  *
  * @since         7.0.0
- * @version       7.0.8
+ * @version       7.0.9
  */
 class trosofortueberweisung_notification extends oxUBase
 {
@@ -56,6 +56,7 @@ class trosofortueberweisung_notification extends oxUBase
             case 'pending':
                 $this->_troFinalizeOrderIfStatusNotFinished($oTransactionData);
                 oxRegistry::getUtils()->showMessageAndExit('payment pending');
+                break;
 
             // "Deutsche Handelsbank" account - money not received
             case 'loss':
