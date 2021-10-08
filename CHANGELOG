@@ -169,3 +169,6 @@
 
 ==8.0.11==
 *FIXED: Bug, stock amount of bundle articles does not get reduced
+
+==8.0.12==
+*FIXED: Bug, price in admin order overview was shown wrong

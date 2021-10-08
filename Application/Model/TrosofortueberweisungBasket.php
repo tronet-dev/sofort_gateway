@@ -10,7 +10,7 @@ use OxidEsales\Eshop\Application\Model\Basket;
  * @author        tronet GmbH
  *
  * @since         8.0.6
- * @version       8.0.11
+ * @version       8.0.12
  */
 class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
 {
@@ -67,7 +67,7 @@ class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
      *
      * @author  tronet GmbH
      * @since   8.0.11
-     * @version 8.0.11
+     * @version 8.0.12
      */
     public function troAddOrderArticlesToBasket($aOrderArticles)
     {
@@ -75,7 +75,8 @@ class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
         {
             foreach ($aOrderArticles as $oOrderArticle)
             {
-                if ($oOrderArticle->oxorderarticles__oxamount->value > 0 && !$oOrderArticle->isBundle()) {
+                if ($oOrderArticle->oxorderarticles__oxamount->value > 0 && !$oOrderArticle->isBundle())
+                {
                     $this->_isForOrderRecalculation = true;
                     $sItemId = $oOrderArticle->getId();
         
@@ -87,8 +88,6 @@ class TrosofortueberweisungBasket extends TrosofortueberweisungBasket_parent
         
                     //calling update method
                     $this->onUpdate();
-        
-                    return $this->_aBasketContents[$sItemId];
                 }
             }
         }

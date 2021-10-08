@@ -18,7 +18,7 @@
             'en' => 'Sofort. by tronet',
         ],
         'thumbnail'   => "out/img/logo_sofort_fallback.png",
-        'version'     => '8.0.11',
+        'version'     => '8.0.12',
         'author'      => 'tronet GmbH',
         'email'       => 'integration@sofort.com',
         'url'         => 'https://www.tronet.media/',
