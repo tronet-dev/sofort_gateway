@@ -6,7 +6,7 @@
  * @author        tronet GmbH
  *
  * @since         7.0.6
- * @version       7.0.11
+ * @version       7.0.12
  */
 class trosofortueberweisungoxbasket extends trosofortueberweisungoxbasket_parent
 {
@@ -56,7 +56,7 @@ class trosofortueberweisungoxbasket extends trosofortueberweisungoxbasket_parent
      *
      * @author  tronet GmbH
      * @since   7.0.11
-     * @version 7.0.11
+     * @version 7.0.12
      */
     public function troAddOrderArticlesToBasket($aOrderArticles)
     {
@@ -64,7 +64,8 @@ class trosofortueberweisungoxbasket extends trosofortueberweisungoxbasket_parent
         {
             foreach ($aOrderArticles as $oOrderArticle)
             {
-                if ($oOrderArticle->oxorderarticles__oxamount->value > 0 && !$oOrderArticle->isBundle()) {
+                if ($oOrderArticle->oxorderarticles__oxamount->value > 0 && !$oOrderArticle->isBundle())
+                {
                     $this->_isForOrderRecalculation = true;
                     $sItemId = $oOrderArticle->getId();
         
@@ -76,8 +77,6 @@ class trosofortueberweisungoxbasket extends trosofortueberweisungoxbasket_parent
         
                     //calling update method
                     $this->onUpdate();
-        
-                    return $this->_aBasketContents[$sItemId];
                 }
             }
         }
